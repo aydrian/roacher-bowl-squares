@@ -1,0 +1,50 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["cockroachdb"]
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL")
+}
+
+model Claim {
+  id            String    @id(map: "primary") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  gameId        String    @map("game_id") @db.Uuid
+  participantId String    @map("participant_id") @db.Uuid
+  row           BigInt
+  col           BigInt
+  createdAt     DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  game          Game      @relation(fields: [gameId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_game_id_ref_games")
+  participant   User      @relation(fields: [participantId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_participant_id_ref_users")
+
+  @@map("claims")
+}
+
+model Game {
+  id        String    @id(map: "primary") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug      String    @unique
+  hostId    String    @map("host_id") @db.Uuid
+  state     String    @default("INIT")
+  claimCost Decimal   @default(1.0) @map("claim_cost") @db.Decimal
+  board     Json?     @default(dbgenerated("'{}':::JSONB"))
+  scores    Json?     @default(dbgenerated("'[]':::JSONB"))
+  winners   Json?     @default(dbgenerated("'[]':::JSONB"))
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  host      User      @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_host_id_ref_users")
+  claims    Claim[]
+
+  @@map("games")
+}
+
+model User {
+  id           String    @id(map: "primary") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
+  username     String    @unique
+  passwordMash String    @map("password_hash")
+  claims       Claim[]
+  hostedGames  Game[]
+
+  @@map("users")
+}
