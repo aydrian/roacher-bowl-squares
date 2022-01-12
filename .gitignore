@@ -1,3 +1,7 @@
 node_modules
+/.cache
+/netlify/functions/server/build
+/public/build
+/.netlify
 # Keep environment variables out of version control
 .env
