@@ -24,13 +24,13 @@ model Claim {
 model Game {
   id        String    @id(map: "primary") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   slug      String    @unique
-  hostId    String    @map("host_id") @db.Uuid
   state     String    @default("INIT")
   claimCost Decimal   @default(1.0) @map("claim_cost") @db.Decimal
   board     Json?     @default(dbgenerated("'{}':::JSONB"))
   scores    Json?     @default(dbgenerated("'[]':::JSONB"))
   winners   Json?     @default(dbgenerated("'[]':::JSONB"))
   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  hostId    String    @map("host_id") @db.Uuid
   host      User      @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_host_id_ref_users")
   claims    Claim[]
 
