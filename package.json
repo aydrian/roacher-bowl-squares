@@ -1,8 +1,8 @@
 {
   "private": true,
-  "name": "remix-app-template-js",
-  "description": "",
-  "license": "",
+  "name": "roacher-bowl-squares",
+  "description": "A Super Bowl Squares app using CockroachDB Serverless",
+  "license": "Apache-2.0",
   "scripts": {
     "build": "remix build",
     "dev": "cross-env NODE_ENV=development netlify dev",
