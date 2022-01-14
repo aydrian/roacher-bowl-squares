@@ -1,55 +1,69 @@
 export function Grid({
-  rows = [],
-  cols = [],
+  rows,
+  cols,
   claims = [],
   state = "INIT",
   participant = ""
 }) {
   return (
     <div className="grid-wrapper">
-      <div className="headers-top">
-        {rows.map((i) => {
-          return <Header key={i}>{i}</Header>;
-        })}
-      </div>
-      <div className="headers-side">
-        {cols.map((i) => {
-          return <Header key={i}>{i}</Header>;
-        })}
-      </div>
-      <div className="grid">
-        {[...Array(100).keys()].map((i) => {
-          const row = Math.floor(i / 10);
-          const col = i % 10;
-          const claim = claims.find(
-            (item) => item.row === row && item.col === col
-          );
-          return claim ? (
-            <ClaimedSquare
-              key={i}
-              row={row}
-              col={col}
-              state={state}
-              claim={claim}
-              participant={participant}
-            />
-          ) : (
-            <Square key={i} row={row} col={col} state={state} />
-          );
-        })}
-      </div>
+      <table className="grid">
+        {cols && (
+          <thead>
+            <th className="header"></th>
+            {cols.map((i) => {
+              return <th key={i}>{i}</th>;
+            })}
+          </thead>
+        )}
+        <tbody>
+          {[...Array(10).keys()].map((row) => {
+            return (
+              <tr key={row}>
+                {rows && <th className="header">{rows[row]}</th>}
+                {[...Array(10).keys()].map((col) => {
+                  const claim = claims.find(
+                    (item) => item.row === row && item.col === col
+                  );
+                  return (
+                    <td key={col}>
+                      {claim ? (
+                        <ClaimedSquare
+                          row={row}
+                          col={col}
+                          state={state}
+                          claim={claim}
+                          participant={participant}
+                        />
+                      ) : (
+                        <Square row={row} col={col} state={state} />
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
-}
-
-function Header({ children }) {
-  return <div className="header">{children}</div>;
 }
 
 function Square({ row, col, state }) {
   return (
     <div className="square">
-      {state === "INIT" && <button className="square-button">Claim</button>}
+      {state === "INIT" && (
+        <button
+          type="submit"
+          className="square-button"
+          name="square"
+          // value={`${row}-${col}`}
+          value={JSON.stringify({ action: "claim", row, col })}
+        >
+          Claim
+        </button>
+      )}
     </div>
   );
 }
@@ -59,7 +73,14 @@ function ClaimedSquare({ row, col, state, claim, participant }) {
     return (
       <div className="square claimed-self">
         {state === "INIT" ? (
-          <button className="square-button">Release</button>
+          <button
+            type="submit"
+            className="square-button"
+            name="release"
+            value={`${row}-${col}`}
+          >
+            Release
+          </button>
         ) : (
           <div>Your Square</div>
         )}
