@@ -63,29 +63,37 @@ export default function Index() {
       </div>
       <Link to="new">Create a Game</Link>
       <h2>Hosted Games</h2>
-      <ul>
-        {hostedGames.map((game) => {
-          return (
-            <li key={game.id}>
-              <Link to={game.id}>
-                {game.slug} - {game.createdAt} [{game.state}]
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+      {hostedGames.length ? (
+        <ul>
+          {hostedGames.map((game) => {
+            return (
+              <li key={game.id}>
+                <Link to={game.id}>
+                  {game.slug} - {game.createdAt} [{game.state}]
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <div>No hosted games. Create a new one.</div>
+      )}
       <h2>Participating Games</h2>
-      <ul>
-        {playingGames.map(({ game }) => {
-          return (
-            <li key={game.id}>
-              <Link to={game.id}>
-                {game.slug} - {game.createdAt} [{game.state}]
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+      {playingGames.length ? (
+        <ul>
+          {playingGames.map(({ game }) => {
+            return (
+              <li key={game.id}>
+                <Link to={game.id}>
+                  {game.slug} - {game.createdAt} [{game.state}]
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <div>You are not participating in any games. Join one.</div>
+      )}
     </div>
   );
 }

@@ -4,30 +4,35 @@ import { db } from "~/utils/db.server";
 import { requireUserId } from "~/utils/session.server";
 import stylesUrl from "../../styles/game.css";
 
+export const range = (n) => [...Array(n).keys()];
+
+export function shuffle(array) {
+  let currentIndex = array.length,
+    randomIndex;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex]
+    ];
+  }
+
+  return array;
+}
+
 export const links = () => {
   return [{ rel: "stylesheet", href: stylesUrl }];
 };
 
 export const loader = async ({ request, params }) => {
   const participantId = await requireUserId(request);
-  if (params.gameId === "test") {
-    const game = {
-      id: "test",
-      slug: "test",
-      state: "INIT",
-      board: {
-        teams: ["Team 1", "Team 2"],
-        rows: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-        cols: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-      },
-      claims: [
-        { row: 1, col: 5, participant: "Bob" },
-        { row: 2, col: 2, participant: "Sally" }
-      ]
-    };
-    const isHost = true;
-    return { game, isHost, participantId };
-  }
+
   const game = await db.game.findUnique({
     where: { id: params.gameId },
     include: { claims: { include: { participant: true } } }
@@ -40,11 +45,21 @@ export const loader = async ({ request, params }) => {
   }
   const isHost = participantId === game.hostId;
 
+  const numClaims = await db.claim.count({
+    where: { AND: [{ gameId: game.id }, { participantId }] }
+  });
+
+  const participants = await db.claim.findMany({
+    select: { participant: true },
+    where: { gameId: game.id },
+    distinct: ["participantId"]
+  });
+
   BigInt.prototype.toJSON = function () {
     return Number(this);
   };
 
-  return { game, isHost, participantId };
+  return { game, isHost, participantId, numClaims, participants };
 };
 
 export const action = async ({ params, request }) => {
@@ -55,27 +70,65 @@ export const action = async ({ params, request }) => {
     if (sqAction === "claim") {
       const row = BigInt(form.get("row"));
       const col = BigInt(form.get("col"));
-      console.log(`Claiming square at (${row}, ${col})`);
       await db.claim.create({
         data: { gameId: params.gameId, participantId, row, col }
       });
     } else if (sqAction === "release") {
       const claimId = form.get("claimId");
-      console.log(`Releasing claim with id ${claimId}`);
       await db.claim.delete({ where: { id: claimId } });
     }
-    return "hello";
+    return "ok";
+  }
+  if (form.has("gameAction")) {
+    const gameAction = form.get("gameAction");
+    if (gameAction === "start") {
+      const game = await db.game.findUnique({
+        select: { board: true },
+        where: { id: params.gameId }
+      });
+
+      const rows = shuffle(range(10));
+      const cols = shuffle(range(10));
+      const board = { rows, cols, ...game.board };
+      await db.game.update({
+        data: {
+          state: "Q1",
+          board
+        },
+        where: { id: params.gameId }
+      });
+    }
+    return "ok";
   }
   console.log("Got a request", form);
-  return "hello";
+  return "ok";
 };
 
 export default function GameRoute() {
-  const { game, isHost, participantId } = useLoaderData();
+  const { game, isHost, participantId, numClaims, participants } =
+    useLoaderData();
+  const remainingSquares = 100 - game.claims.length;
   return (
     <div>
-      <h2>Game {game.slug}</h2>
-      <p>Remaining Squares: {100 - game.claims.length}</p>
+      <h2>
+        Game {game.slug} {isHost && "(hosting)"}
+      </h2>
+      <p>
+        Participants: {participants.length} Remaining Squares:{" "}
+        {remainingSquares}
+      </p>
+      {game.state === "INIT" && remainingSquares === 0 && (
+        <div>
+          <Form method="post">
+            <button type="submit" name="gameAction" value="start">
+              Start
+            </button>
+          </Form>
+        </div>
+      )}
+      <p>
+        Claimed {numClaims}, total cost: {numClaims * game.claimCost}
+      </p>
       <Grid game={game} participantId={participantId} />
     </div>
   );
