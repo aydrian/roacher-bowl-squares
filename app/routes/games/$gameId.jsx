@@ -1,5 +1,7 @@
 import { Form, useLoaderData } from "remix";
 import { Grid } from "~/components/game-grid";
+import { db } from "~/utils/db.server";
+import { requireUserId } from "~/utils/session.server";
 import stylesUrl from "../../styles/game.css";
 
 export const links = () => {
@@ -7,51 +9,74 @@ export const links = () => {
 };
 
 export const loader = async ({ request, params }) => {
-  const { gameId } = params;
-  //const userId = await getUserId(request);
-  /*const joke = await db.joke.findUnique({
-    where: { id: params.jokeId }
+  const participantId = await requireUserId(request);
+  if (params.gameId === "test") {
+    const game = {
+      id: "test",
+      slug: "test",
+      state: "INIT",
+      board: {
+        teams: ["Team 1", "Team 2"],
+        rows: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        cols: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      },
+      claims: [
+        { row: 1, col: 5, participant: "Bob" },
+        { row: 2, col: 2, participant: "Sally" }
+      ]
+    };
+    const isHost = true;
+    return { game, isHost, participantId };
+  }
+  const game = await db.game.findUnique({
+    where: { id: params.gameId },
+    include: { claims: { include: { participant: true } } }
   });
-  if (!joke) {
-    throw new Response("What a joke! Not found.", {
+  // console.log(game);
+  if (!game) {
+    throw new Response("Not found.", {
       status: 404
     });
   }
-  const data: LoaderData = {
-    joke,
-    isOwner: userId === joke.jokesterId
+  const isHost = participantId === game.hostId;
+
+  BigInt.prototype.toJSON = function () {
+    return Number(this);
   };
-  return data;*/
-  const state = "INIT";
-  const rows = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  const cols = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  const claims = [
-    { row: 1, col: 5, participant: "Bob" },
-    { row: 2, col: 2, participant: "Sally" }
-  ];
-  return { gameId, state, rows, cols, claims };
+
+  return { game, isHost, participantId };
 };
 
-export const action = async ({ request }) => {
-  const body = await request.formData();
-  console.log("Got a request", body);
+export const action = async ({ params, request }) => {
+  const participantId = await requireUserId(request);
+  const form = await request.formData();
+  if (form.has("sqAction")) {
+    const sqAction = form.get("sqAction");
+    if (sqAction === "claim") {
+      const row = BigInt(form.get("row"));
+      const col = BigInt(form.get("col"));
+      console.log(`Claiming square at (${row}, ${col})`);
+      await db.claim.create({
+        data: { gameId: params.gameId, participantId, row, col }
+      });
+    } else if (sqAction === "release") {
+      const claimId = form.get("claimId");
+      console.log(`Releasing claim with id ${claimId}`);
+      await db.claim.delete({ where: { id: claimId } });
+    }
+    return "hello";
+  }
+  console.log("Got a request", form);
   return "hello";
 };
 
 export default function GameRoute() {
-  const data = useLoaderData();
+  const { game, isHost, participantId } = useLoaderData();
   return (
     <div>
-      <h2>Game {data.gameId}</h2>
-      <Form method="post">
-        <Grid
-          state={data.state}
-          rows={data.rows}
-          cols={data.cols}
-          claims={data.claims}
-          participant="Bob"
-        />
-      </Form>
+      <h2>Game {game.slug}</h2>
+      <p>Remaining Squares: {100 - game.claims.length}</p>
+      <Grid game={game} participantId={participantId} />
     </div>
   );
 }

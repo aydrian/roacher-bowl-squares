@@ -1,10 +1,8 @@
-export function Grid({
-  rows,
-  cols,
-  claims = [],
-  state = "INIT",
-  participant = ""
-}) {
+import { Form } from "remix";
+
+export function Grid({ game, participantId = "" }) {
+  const { board, claims = [], state = "INIT" } = game;
+  const { rows, cols } = board;
   return (
     <div className="grid-wrapper">
       <table className="grid">
@@ -33,7 +31,7 @@ export function Grid({
                           col={col}
                           state={state}
                           claim={claim}
-                          participant={participant}
+                          participantId={participantId}
                         />
                       ) : (
                         <Square row={row} col={col} state={state} />
@@ -54,33 +52,41 @@ function Square({ row, col, state }) {
   return (
     <div className="square">
       {state === "INIT" && (
-        <button
-          type="submit"
-          className="square-button"
-          name="square"
-          // value={`${row}-${col}`}
-          value={JSON.stringify({ action: "claim", row, col })}
-        >
-          Claim
-        </button>
+        <Form method="post">
+          <input type="hidden" name="row" value={row} />
+          <input type="hidden" name="col" value={col} />
+          <button
+            type="submit"
+            className="square-button"
+            name="sqAction"
+            value="claim"
+          >
+            Claim
+          </button>
+        </Form>
       )}
     </div>
   );
 }
 
-function ClaimedSquare({ row, col, state, claim, participant }) {
-  if (claim?.participant === participant) {
+function ClaimedSquare({ row, col, state, claim, participantId }) {
+  if (claim?.participantId === participantId) {
     return (
       <div className="square claimed-self">
         {state === "INIT" ? (
-          <button
-            type="submit"
-            className="square-button"
-            name="release"
-            value={`${row}-${col}`}
-          >
-            Release
-          </button>
+          <Form method="post">
+            <input type="hidden" name="row" value={row} />
+            <input type="hidden" name="col" value={col} />
+            <input type="hidden" name="claimId" value={claim.id} />
+            <button
+              type="submit"
+              className="square-button"
+              name="sqAction"
+              value="release"
+            >
+              Release
+            </button>
+          </Form>
         ) : (
           <div>Your Square</div>
         )}
@@ -88,7 +94,7 @@ function ClaimedSquare({ row, col, state, claim, participant }) {
     );
   } else {
     return (
-      <div className="square claimed-other">{`Claimed by ${claim.participant}`}</div>
+      <div className="square claimed-other">{`Claimed by ${claim.participant.username}`}</div>
     );
   }
 }

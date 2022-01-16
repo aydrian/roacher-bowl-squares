@@ -9,8 +9,8 @@ export const links = () => {
 
 export const meta = () => {
   return {
-    title: "Remix Jokes | Login",
-    description: "Login to submit your own jokes to Remix Jokes!"
+    title: "Roacher Bowl Squares | Login",
+    description: "Login to play!"
   };
 };
 
@@ -33,7 +33,7 @@ export const action = async ({ request }) => {
   const loginType = form.get("loginType");
   const username = form.get("username");
   const password = form.get("password");
-  const redirectTo = form.get("redirectTo") || "/jokes";
+  const redirectTo = form.get("redirectTo") || "/games";
   if (
     typeof loginType !== "string" ||
     typeof username !== "string" ||
