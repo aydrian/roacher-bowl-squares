@@ -7,6 +7,17 @@ import {
   ScrollRestoration
 } from "remix";
 
+import globalStylesUrl from "./styles/global.css";
+
+export const links = () => {
+  return [
+    {
+      rel: "stylesheet",
+      href: globalStylesUrl
+    }
+  ];
+};
+
 export function meta() {
   return { title: "Roacher Bowl Squares" };
 }
