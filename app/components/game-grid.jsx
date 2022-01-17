@@ -1,6 +1,5 @@
 import { Form } from "remix";
-
-const range = (n) => [...Array(n).keys()];
+import { range } from "~/utils/helpers";
 
 export function Grid({ game, participantId = "" }) {
   const { board, claims = [], state = "INIT" } = game;
@@ -10,7 +9,7 @@ export function Grid({ game, participantId = "" }) {
       <div className="team1">{teams[0]}</div>
       <div className="team2">{teams[1]}</div>
       <table className="grid">
-        {cols && (
+        {state !== "INIT" && cols && (
           <thead>
             <th className="header"></th>
             {cols.map((i) => {
@@ -22,7 +21,9 @@ export function Grid({ game, participantId = "" }) {
           {range(10).map((row) => {
             return (
               <tr key={row}>
-                {rows && <th className="header">{rows[row]}</th>}
+                {state !== "INIT" && rows && (
+                  <th className="header">{rows[row]}</th>
+                )}
                 {range(10).map((col) => {
                   const claim = claims.find(
                     (item) => item.row === row && item.col === col

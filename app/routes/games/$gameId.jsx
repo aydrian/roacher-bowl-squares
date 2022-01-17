@@ -1,30 +1,9 @@
 import { Form, useLoaderData } from "remix";
 import { Grid } from "~/components/game-grid";
 import { db } from "~/utils/db.server";
+import { shuffle, range } from "~/utils/helpers";
 import { requireUserId } from "~/utils/session.server";
 import stylesUrl from "../../styles/game.css";
-
-export const range = (n) => [...Array(n).keys()];
-
-export function shuffle(array) {
-  let currentIndex = array.length,
-    randomIndex;
-
-  // While there remain elements to shuffle...
-  while (currentIndex != 0) {
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    // And swap it with the current element.
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex],
-      array[currentIndex]
-    ];
-  }
-
-  return array;
-}
 
 export const links = () => {
   return [{ rel: "stylesheet", href: stylesUrl }];
@@ -89,7 +68,7 @@ export const action = async ({ params, request }) => {
 
       const rows = shuffle(range(10));
       const cols = shuffle(range(10));
-      const board = { rows, cols, ...game.board };
+      const board = { ...game.board, rows, cols };
       await db.game.update({
         data: {
           state: "Q1",
@@ -117,7 +96,7 @@ export default function GameRoute() {
         Participants: {participants.length} Remaining Squares:{" "}
         {remainingSquares}
       </p>
-      {game.state === "INIT" && remainingSquares === 0 && (
+      {isHost && game.state === "INIT" && remainingSquares === 0 && (
         <div>
           <Form method="post">
             <button type="submit" name="gameAction" value="start">
