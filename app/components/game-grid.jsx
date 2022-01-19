@@ -2,7 +2,7 @@ import { Form } from "remix";
 import { range } from "~/utils/helpers";
 
 export function Grid({ game, participantId = "" }) {
-  const { board, claims = [], state = "INIT" } = game;
+  const { board, claims = [], state = "INIT", winningSquares = [] } = game;
   const { rows, cols, teams } = board;
   return (
     <div className="grid-wrapper">
@@ -28,6 +28,10 @@ export function Grid({ game, participantId = "" }) {
                   const claim = claims.find(
                     (item) => item.row === row && item.col === col
                   );
+                  const isWinner =
+                    winningSquares.find(
+                      (item) => item.row === row && item.col === col
+                    ) !== undefined;
                   return (
                     <td key={col}>
                       <Square
@@ -36,21 +40,9 @@ export function Grid({ game, participantId = "" }) {
                         state={state}
                         claim={claim}
                         participantId={participantId}
+                        isWinner={isWinner}
                       />
                     </td>
-                    /*<td key={col}>
-                      /*{claim ? (
-                        <ClaimedSquare
-                          row={row}
-                          col={col}
-                          state={state}
-                          claim={claim}
-                          participantId={participantId}
-                        />
-                      ) : (
-                        <Square row={row} col={col} state={state} />
-                      )}
-                    </td>*/
                   );
                 })}
               </tr>
@@ -62,13 +54,17 @@ export function Grid({ game, participantId = "" }) {
   );
 }
 
-function Square({ row, col, state, claim, participantId }) {
+function Square({ row, col, state, claim, participantId, isWinner }) {
   const isOwn = claim && claim.participantId === participantId;
   if (state === "INIT") {
     return <InitSquare row={row} col={col} claim={claim} isOwn={isOwn} />;
   }
   return (
-    <div className={`square ${isOwn ? "claimed-self" : "claimed-other"}`}>
+    <div
+      className={`square ${isOwn ? "claimed-self" : "claimed-other"}${
+        isWinner ? " winner" : ""
+      }`}
+    >
       {claim.participant.username}
     </div>
   );
@@ -98,54 +94,3 @@ function InitSquare({ row, col, claim, isOwn }) {
     </div>
   );
 }
-
-/*function Square({ row, col, state }) {
-  return (
-    <div className="square">
-      {state === "INIT" && (
-        <Form method="post">
-          <input type="hidden" name="row" value={row} />
-          <input type="hidden" name="col" value={col} />
-          <button
-            type="submit"
-            className="square-button"
-            name="sqAction"
-            value="claim"
-          >
-            Claim
-          </button>
-        </Form>
-      )}
-    </div>
-  );
-}
-
-function ClaimedSquare({ row, col, state, claim, participantId }) {
-  if (claim?.participantId === participantId) {
-    return (
-      <div className="square claimed-self">
-        {state === "INIT" ? (
-          <Form method="post">
-            <input type="hidden" name="row" value={row} />
-            <input type="hidden" name="col" value={col} />
-            <input type="hidden" name="claimId" value={claim.id} />
-            <button
-              type="submit"
-              className="square-button"
-              name="sqAction"
-              value="release"
-            >
-              Release
-            </button>
-          </Form>
-        ) : (
-          <div>Your Square</div>
-        )}
-      </div>
-    );
-  } else {
-    return (
-      <div className="square claimed-other">{claim.participant.username}</div>
-    );
-  }
-}*/

@@ -17,7 +17,7 @@ CREATE TABLE games (
   state STRING NOT NULL DEFAULT 'INIT' CHECK (state = 'INIT' OR state = 'Q1' OR state = 'Q2' OR state = 'Q3' OR state = 'Q4' OR state = 'FINAL'),
   claim_cost DECIMAL NOT NULL DEFAULT 1.0,
   board JSONB DEFAULT '{}',
-  scores JSONB DEFAULT '[]',
+  scores JSONB DEFAULT '[[0,0]]',
   winners JSON DEFAULT '[]',
   created_at TIMESTAMPTZ DEFAULT now()
 );
@@ -29,4 +29,5 @@ CREATE TABLE claims (
   row INT NOT NULL,
   col INT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT now()
+  UNIQUE(game_id, row, col)
 );

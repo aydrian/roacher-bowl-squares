@@ -21,7 +21,6 @@ export const loader = async ({ request }) => {
 export const action = async ({ request }) => {
   const userId = await requireUserId(request);
   const form = await request.formData();
-  console.log(userId);
 
   const slug = form.get("slug");
   const team1 = form.get("team1");
@@ -48,7 +47,7 @@ export default function NewGameRoute() {
       <Form method="post">
         <div>
           <label>
-            Slug: <input type="text" name="slug" defaultValue={randomSlug} />
+            Code: <input type="text" name="slug" defaultValue={randomSlug} />
           </label>
         </div>
         <div>
