@@ -1,8 +1,13 @@
 import { Form, useLoaderData } from "remix";
 import { Grid } from "~/components/game-grid";
-import { ScoreBox } from "~/components/score-box";
+import { ScoreBoard } from "~/components/score-board";
 import { db } from "~/utils/db.server";
-import { shuffle, range } from "~/utils/helpers";
+import {
+  getWinningSquares,
+  lockScore,
+  startGame,
+  updateScore
+} from "~/utils/game-logic.server";
 import { requireUserId } from "~/utils/session.server";
 import stylesUrl from "../../styles/game.css";
 
@@ -13,11 +18,11 @@ export const links = () => {
 export const loader = async ({ request, params }) => {
   const participantId = await requireUserId(request);
 
-  const game = await db.game.findUnique({
+  let game = await db.game.findUnique({
     where: { id: params.gameId },
     include: { claims: { include: { participant: true } } }
   });
-  // console.log(game);
+
   if (!game) {
     throw new Response("Not found.", {
       status: 404
@@ -34,6 +39,11 @@ export const loader = async ({ request, params }) => {
     where: { gameId: game.id },
     distinct: ["participantId"]
   });
+
+  if (game.state !== "INIT") {
+    const winningSquares = getWinningSquares(game.board, game.scores);
+    game = { ...game, winningSquares };
+  }
 
   BigInt.prototype.toJSON = function () {
     return Number(this);
@@ -62,40 +72,25 @@ export const action = async ({ params, request }) => {
   if (form.has("gameAction")) {
     const gameAction = form.get("gameAction");
     if (gameAction === "start") {
-      const game = await db.game.findUnique({
-        select: { board: true },
-        where: { id: params.gameId }
-      });
-
-      const rows = shuffle(range(10));
-      const cols = shuffle(range(10));
-      const board = { ...game.board, rows, cols };
-      await db.game.update({
-        data: {
-          state: "Q1",
-          board
-        },
-        where: { id: params.gameId }
-      });
+      await startGame();
     }
     return "ok";
   }
   if (form.has("scoreAction")) {
     const scoreAction = form.get("scoreAction");
+    const score1 = parseInt(form.get("score1"));
+    const score2 = parseInt(form.get("score2"));
+    const game = await db.game.findUnique({
+      where: { id: params.gameId }
+    });
     if (scoreAction === "lockIn") {
-      const score1 = form.get("score1");
-      const score2 = form.get("score2");
       console.log(`Lock In ${score1}-${score2}`);
-      return "ok";
+      await lockScore(game, score1, score2);
+    } else if (scoreAction === "update") {
+      console.log(`Update ${score1}-${score2}`);
+      await updateScore(game, score1, score2);
     }
-  }
-  if (form.has("_form")) {
-    const _form = form.get("_form");
-    if (_form === "scorebox") {
-      const score = form.get("score");
-      console.log(`Score changed to ${score}`);
-      return "ok";
-    }
+    return "ok";
   }
   console.log("Got a request", form);
   return "ok";
@@ -111,8 +106,10 @@ export default function GameRoute() {
         Game {game.slug} {isHost && "(hosting)"}
       </h2>
       <p>
-        Participants: {participants.length} Remaining Squares:{" "}
-        {remainingSquares}
+        Participants: {participants.length}{" "}
+        {game.state === "INIT" &&
+          `Remaining Squares: 
+        ${remainingSquares}`}
       </p>
       {isHost && game.state === "INIT" && remainingSquares === 0 && (
         <div>
@@ -123,9 +120,7 @@ export default function GameRoute() {
           </Form>
         </div>
       )}
-      {isHost && game.state !== "INIT" && (
-        <ScoreBox gameState={game.state} scores={game.scores} />
-      )}
+      {game.state !== "INIT" && <ScoreBoard game={game} isHost={isHost} />}
       <p>
         Claimed {numClaims}, total cost: {numClaims * game.claimCost}
       </p>
