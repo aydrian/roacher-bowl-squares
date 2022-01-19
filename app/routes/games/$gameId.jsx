@@ -1,5 +1,6 @@
 import { Form, useLoaderData } from "remix";
 import { Grid } from "~/components/game-grid";
+import { ScoreBox } from "~/components/score-box";
 import { db } from "~/utils/db.server";
 import { shuffle, range } from "~/utils/helpers";
 import { requireUserId } from "~/utils/session.server";
@@ -79,6 +80,23 @@ export const action = async ({ params, request }) => {
     }
     return "ok";
   }
+  if (form.has("scoreAction")) {
+    const scoreAction = form.get("scoreAction");
+    if (scoreAction === "lockIn") {
+      const score1 = form.get("score1");
+      const score2 = form.get("score2");
+      console.log(`Lock In ${score1}-${score2}`);
+      return "ok";
+    }
+  }
+  if (form.has("_form")) {
+    const _form = form.get("_form");
+    if (_form === "scorebox") {
+      const score = form.get("score");
+      console.log(`Score changed to ${score}`);
+      return "ok";
+    }
+  }
   console.log("Got a request", form);
   return "ok";
 };
@@ -104,6 +122,9 @@ export default function GameRoute() {
             </button>
           </Form>
         </div>
+      )}
+      {isHost && game.state !== "INIT" && (
+        <ScoreBox gameState={game.state} scores={game.scores} />
       )}
       <p>
         Claimed {numClaims}, total cost: {numClaims * game.claimCost}

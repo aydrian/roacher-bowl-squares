@@ -11,19 +11,28 @@
 
 .grid {
   table-layout: fixed;
+  /* border-collapse: collapse; */
   grid-area: grid;
   width: 100%;
   height: 100%;
 }
 
+.grid td {
+  padding: 0;
+}
+
 .team1 {
+  text-align: center;
   grid-area: team1;
   text-transform: uppercase;
+  font-weight: bold;
 }
 
 .team2 {
+  text-align: center;
   grid-area: team2;
   text-transform: uppercase;
+  font-weight: bold;
   writing-mode: vertical-rl;
   text-orientation: upright;
 }
@@ -38,8 +47,10 @@
 }
 
 .square-button {
+  display: inline-block;
   height: 100%;
   width: 100%;
+  padding: 0;
 }
 
 .claimed-self {
