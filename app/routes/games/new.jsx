@@ -47,7 +47,7 @@ export default function NewGameRoute() {
       <Form method="post">
         <div>
           <label>
-            Slug: <input type="text" name="slug" defaultValue={randomSlug} />
+            Code: <input type="text" name="slug" defaultValue={randomSlug} />
           </label>
         </div>
         <div>
