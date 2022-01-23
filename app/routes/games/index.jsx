@@ -15,14 +15,12 @@ export const loader = async ({ request }) => {
     where: { hostId: userId },
     orderBy: { createdAt: "desc" }
   });
-  console.log(hostedGames);
 
   const playingGames = await db.claim.findMany({
     select: { game: true },
     distinct: ["gameId"],
     where: { participantId: userId }
   });
-  console.log(playingGames);
 
   return { hostedGames, playingGames };
 };
