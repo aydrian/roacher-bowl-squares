@@ -4,7 +4,8 @@ import {
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration
+  ScrollRestoration,
+  useLoaderData
 } from "remix";
 
 import globalStylesUrl from "./styles/global.css";
@@ -22,7 +23,17 @@ export function meta() {
   return { title: "Roacher Bowl Squares" };
 }
 
+export function loader() {
+  return {
+    ENV: {
+      PUSHER_KEY: process.env.PUSHER_KEY,
+      PUSHER_CLUSTER: process.env.PUSHER_CLUSTER
+    }
+  };
+}
+
 export default function App() {
+  const data = useLoaderData();
   return (
     <html lang="en">
       <head>
@@ -34,6 +45,11 @@ export default function App() {
       <body>
         <Outlet />
         <ScrollRestoration />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(data.ENV)}`
+          }}
+        />
         <Scripts />
         {process.env.NODE_ENV === "development" && <LiveReload />}
       </body>

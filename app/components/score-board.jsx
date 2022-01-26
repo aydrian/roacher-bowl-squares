@@ -17,9 +17,11 @@ export function ScoreBoard({ game, isHost }) {
       <Form method="post" replace>
         <table>
           <thead>
-            <th></th>
-            <th>{team1}</th>
-            <th>{team2}</th>
+            <tr>
+              <th></th>
+              <th>{team1}</th>
+              <th>{team2}</th>
+            </tr>
           </thead>
           <tbody>
             {quarters.map(([quarter, label, showFor], i) => (

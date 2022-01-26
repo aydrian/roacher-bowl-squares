@@ -11,10 +11,12 @@ export function Grid({ game, participantId = "" }) {
       <table className="grid">
         {state !== "INIT" && cols && (
           <thead>
-            <th className="header"></th>
-            {cols.map((i) => {
-              return <th key={i}>{i}</th>;
-            })}
+            <tr>
+              <th className="header"></th>
+              {cols.map((i) => {
+                return <th key={i}>{i}</th>;
+              })}
+            </tr>
           </thead>
         )}
         <tbody>

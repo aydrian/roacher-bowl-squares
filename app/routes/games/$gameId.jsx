@@ -1,7 +1,11 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Form, useLoaderData } from "remix";
+import Pusher from "pusher-js";
 import { Grid } from "~/components/game-grid";
 import { ScoreBoard } from "~/components/score-board";
 import { db } from "~/utils/db.server";
+import { pusher } from "~/utils/pusher.server";
 import {
   getWinningSquares,
   lockScore,
@@ -60,20 +64,30 @@ export const action = async ({ params, request }) => {
     if (sqAction === "claim") {
       const row = BigInt(form.get("row"));
       const col = BigInt(form.get("col"));
-      await db.claim.create({
-        data: { gameId: params.gameId, participantId, row, col }
-      });
+      try {
+        await db.claim.create({
+          data: { gameId: params.gameId, participantId, row, col }
+        });
+      } catch (err) {
+        console.log(err);
+      }
     } else if (sqAction === "release") {
       const claimId = form.get("claimId");
       await db.claim.delete({ where: { id: claimId } });
     }
+    await pusher.trigger(params.gameId, "refresh", {
+      participantId
+    });
     return "ok";
   }
   if (form.has("gameAction")) {
     const gameAction = form.get("gameAction");
     if (gameAction === "start") {
-      await startGame();
+      await startGame(params.gameId);
     }
+    await pusher.trigger(params.gameId, "refresh", {
+      participantId
+    });
     return "ok";
   }
   if (form.has("scoreAction")) {
@@ -90,6 +104,9 @@ export const action = async ({ params, request }) => {
       console.log(`Update ${score1}-${score2}`);
       await updateScore(game, score1, score2);
     }
+    await pusher.trigger(params.gameId, "refresh", {
+      participantId
+    });
     return "ok";
   }
   console.log("Got a request", form);
@@ -99,7 +116,30 @@ export const action = async ({ params, request }) => {
 export default function GameRoute() {
   const { game, isHost, participantId, numClaims, participants } =
     useLoaderData();
+  let navigate = useNavigate();
   const remainingSquares = 100 - game.claims.length;
+
+  if (game.state !== "FINAL") {
+    useEffect(() => {
+      Pusher.logToConsole = true;
+      const pusher = new Pusher(window.ENV.PUSHER_KEY, {
+        cluster: window.ENV.PUSHER_CLUSTER
+      });
+
+      const channel = pusher.subscribe(game.id);
+      channel.bind("refresh", function (event) {
+        if (event.participantId !== participantId) {
+          navigate(".", { replace: true });
+        }
+      });
+
+      return () => {
+        channel.unbind_all();
+        channel.unsubscribe();
+      };
+    }, []);
+  }
+
   return (
     <div>
       <h2>
