@@ -18,6 +18,59 @@ function advanceState(currentState) {
   }
 }
 
+export async function getGame(gameId) {
+  let game = await db.game.findUnique({
+    where: { id: gameId },
+    include: { claims: { include: { participant: true } } }
+  });
+
+  if (!game) {
+    throw new Response("Not found.", {
+      status: 404
+    });
+  }
+
+  if (game.state !== "INIT") {
+    const winningSquares = getWinningSquares(game.board, game.scores);
+    game = { ...game, winningSquares };
+  }
+
+  return game;
+}
+
+export async function getParticipants(gameId) {
+  const participants = await db.claim.findMany({
+    select: { participant: true },
+    where: { gameId },
+    distinct: ["participantId"]
+  });
+  return participants;
+}
+
+export async function countClaims(gameId, participantId) {
+  const numClaims = await db.claim.count({
+    where: { AND: [{ gameId }, { participantId }] }
+  });
+  return numClaims;
+}
+
+export async function claimSquare(gameId, participantId, row, col) {
+  row = BigInt(row);
+  col = BigInt(col);
+  try {
+    const claim = await db.claim.create({
+      data: { gameId, participantId, row, col }
+    });
+    return claim;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function releaseSquare(claimId) {
+  await db.claim.delete({ where: { id: claimId } });
+}
+
 export async function startGame(gameId) {
   const game = await db.game.findUnique({
     select: { board: true },
@@ -36,7 +89,10 @@ export async function startGame(gameId) {
   });
 }
 
-export async function lockScore(game, score1, score2) {
+export async function lockScore(gameId, score1, score2) {
+  const game = await db.game.findUnique({
+    where: { id: gameId }
+  });
   const { id, state } = game;
   const nextState = advanceState(state);
   const winningClaim = await getWinningClaim(game, score1, score2);
@@ -53,7 +109,10 @@ export async function lockScore(game, score1, score2) {
   });
 }
 
-export async function updateScore(game, score1, score2) {
+export async function updateScore(gameId, score1, score2) {
+  const game = await db.game.findUnique({
+    where: { id: gameId }
+  });
   const { id, state } = game;
   const winningClaim = await getWinningClaim(game, score1, score2);
   await db.game.update({

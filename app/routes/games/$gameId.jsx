@@ -4,14 +4,17 @@ import { Form, useLoaderData } from "remix";
 import Pusher from "pusher-js";
 import { Grid } from "~/components/game-grid";
 import { ScoreBoard } from "~/components/score-board";
-import { db } from "~/utils/db.server";
-import { pusher } from "~/utils/pusher.server";
 import {
-  getWinningSquares,
+  claimSquare,
+  countClaims,
+  getGame,
+  getParticipants,
   lockScore,
+  releaseSquare,
   startGame,
   updateScore
 } from "~/utils/game-logic.server";
+import { sendRefresh } from "~/utils/pusher.server";
 import { requireUserId } from "~/utils/session.server";
 import stylesUrl from "../../styles/game.css";
 
@@ -22,32 +25,10 @@ export const links = () => {
 export const loader = async ({ request, params }) => {
   const participantId = await requireUserId(request);
 
-  let game = await db.game.findUnique({
-    where: { id: params.gameId },
-    include: { claims: { include: { participant: true } } }
-  });
-
-  if (!game) {
-    throw new Response("Not found.", {
-      status: 404
-    });
-  }
+  let game = await getGame(params.gameId);
   const isHost = participantId === game.hostId;
-
-  const numClaims = await db.claim.count({
-    where: { AND: [{ gameId: game.id }, { participantId }] }
-  });
-
-  const participants = await db.claim.findMany({
-    select: { participant: true },
-    where: { gameId: game.id },
-    distinct: ["participantId"]
-  });
-
-  if (game.state !== "INIT") {
-    const winningSquares = getWinningSquares(game.board, game.scores);
-    game = { ...game, winningSquares };
-  }
+  const numClaims = await countClaims(game.id, participantId);
+  const participants = await getParticipants(game.id);
 
   BigInt.prototype.toJSON = function () {
     return Number(this);
@@ -57,56 +38,45 @@ export const loader = async ({ request, params }) => {
 };
 
 export const action = async ({ params, request }) => {
+  const { gameId } = params;
   const participantId = await requireUserId(request);
   const form = await request.formData();
+
   if (form.has("sqAction")) {
     const sqAction = form.get("sqAction");
     if (sqAction === "claim") {
-      const row = BigInt(form.get("row"));
-      const col = BigInt(form.get("col"));
-      try {
-        await db.claim.create({
-          data: { gameId: params.gameId, participantId, row, col }
-        });
-      } catch (err) {
-        console.log(err);
-      }
+      await claimSquare(
+        gameId,
+        participantId,
+        form.get("row"),
+        form.get("col")
+      );
     } else if (sqAction === "release") {
-      const claimId = form.get("claimId");
-      await db.claim.delete({ where: { id: claimId } });
+      await releaseSquare(form.get("claimId"));
     }
-    await pusher.trigger(params.gameId, "refresh", {
-      participantId
-    });
+    await sendRefresh(gameId, participantId);
     return "ok";
   }
   if (form.has("gameAction")) {
     const gameAction = form.get("gameAction");
     if (gameAction === "start") {
-      await startGame(params.gameId);
+      await startGame(gameId);
     }
-    await pusher.trigger(params.gameId, "refresh", {
-      participantId
-    });
+    await sendRefresh(gameId, participantId);
     return "ok";
   }
   if (form.has("scoreAction")) {
     const scoreAction = form.get("scoreAction");
     const score1 = parseInt(form.get("score1"));
     const score2 = parseInt(form.get("score2"));
-    const game = await db.game.findUnique({
-      where: { id: params.gameId }
-    });
     if (scoreAction === "lockIn") {
       console.log(`Lock In ${score1}-${score2}`);
-      await lockScore(game, score1, score2);
+      await lockScore(gameId, score1, score2);
     } else if (scoreAction === "update") {
       console.log(`Update ${score1}-${score2}`);
-      await updateScore(game, score1, score2);
+      await updateScore(gameId, score1, score2);
     }
-    await pusher.trigger(params.gameId, "refresh", {
-      participantId
-    });
+    await sendRefresh(gameId, participantId);
     return "ok";
   }
   console.log("Got a request", form);
@@ -121,7 +91,7 @@ export default function GameRoute() {
 
   if (game.state !== "FINAL") {
     useEffect(() => {
-      Pusher.logToConsole = true;
+      // Pusher.logToConsole = true;
       const pusher = new Pusher(window.ENV.PUSHER_KEY, {
         cluster: window.ENV.PUSHER_CLUSTER
       });

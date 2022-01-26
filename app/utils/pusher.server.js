@@ -7,3 +7,9 @@ export const pusher = new Pusher({
   cluster: process.env.PUSHER_CLUSTER,
   useTLS: true
 });
+
+export async function sendRefresh(gameId, participantId) {
+  await pusher.trigger(gameId, "refresh", {
+    participantId
+  });
+}
