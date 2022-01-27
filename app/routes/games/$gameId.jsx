@@ -123,7 +123,7 @@ export default function GameRoute() {
       </p>
       {isHost && game.state === "INIT" && remainingSquares === 0 && (
         <div>
-          <Form method="post">
+          <Form replace method="post">
             <button type="submit" name="gameAction" value="start">
               Start
             </button>

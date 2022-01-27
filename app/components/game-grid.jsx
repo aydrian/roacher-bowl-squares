@@ -1,4 +1,4 @@
-import { Form } from "remix";
+import { Form, useFetcher } from "remix";
 import { range } from "~/utils/helpers";
 
 export function Grid({ game, participantId = "" }) {
@@ -78,9 +78,10 @@ function InitSquare({ row, col, claim, isOwn }) {
       <div className="square claimed-other">{claim.participant.username}</div>
     );
   }
+  const fetcher = useFetcher();
   return (
     <div className={`square ${isOwn ? "claimed-self" : ""}`}>
-      <Form method="post">
+      <fetcher.Form replace method="post">
         <input type="hidden" name="row" value={row} />
         <input type="hidden" name="col" value={col} />
         {claim && <input type="hidden" name="claimId" value={claim.id} />}
@@ -92,7 +93,7 @@ function InitSquare({ row, col, claim, isOwn }) {
         >
           {claim ? "Release" : "Claim"}
         </button>
-      </Form>
+      </fetcher.Form>
     </div>
   );
 }
