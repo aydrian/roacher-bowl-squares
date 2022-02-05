@@ -1,4 +1,11 @@
-import { Form, Link, redirect, useActionData, useSearchParams } from "remix";
+import {
+  Form,
+  Link,
+  json,
+  redirect,
+  useActionData,
+  useSearchParams
+} from "remix";
 import { createUserSession, getUserId, login } from "~/utils/session.server";
 import stylesUrl from "~/styles/login.css";
 
@@ -76,12 +83,65 @@ export default function Index() {
             name="redirectTo"
             value={searchParams.get("redirectTo") ?? undefined}
           />
-          <label>
-            Username <input type="text" name="username" />
-          </label>
-          <label>
-            Password <input type="password" name="password" />
-          </label>
+          <div>
+            <label>
+              Username{" "}
+              <input
+                type="text"
+                name="username"
+                defaultValue={actionData?.fields?.username}
+                aria-invalid={Boolean(actionData?.fieldErrors?.username)}
+                aria-describedby={
+                  actionData?.fieldErrors?.username
+                    ? "username-error"
+                    : undefined
+                }
+              />
+            </label>
+            {actionData?.fieldErrors?.username ? (
+              <p
+                className="form-validation-error"
+                role="alert"
+                id="username-error"
+              >
+                {actionData?.fieldErrors.username}
+              </p>
+            ) : null}
+          </div>
+          <div>
+            <label>
+              Password{" "}
+              <input
+                type="password"
+                name="password"
+                defaultValue={actionData?.fields?.password}
+                aria-invalid={
+                  Boolean(actionData?.fieldErrors?.password) || undefined
+                }
+                aria-describedby={
+                  actionData?.fieldErrors?.password
+                    ? "password-error"
+                    : undefined
+                }
+              />
+            </label>
+            {actionData?.fieldErrors?.password ? (
+              <p
+                className="form-validation-error"
+                role="alert"
+                id="password-error"
+              >
+                {actionData?.fieldErrors.password}
+              </p>
+            ) : null}
+          </div>
+          <div id="form-error-message">
+            {actionData?.formError ? (
+              <p className="form-validation-error" role="alert">
+                {actionData?.formError}
+              </p>
+            ) : null}
+          </div>
           <div className="login-action-wrapper">
             <Link
               to="/register"

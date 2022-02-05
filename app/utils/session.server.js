@@ -5,7 +5,7 @@ import { db } from "./db.server";
 export async function register({ username, password }) {
   const passwordHash = await bcrypt.hash(password, 10);
   return db.user.create({
-    data: { username, passwordHash }
+    data: { username, passwordHash, userid }
   });
 }
 

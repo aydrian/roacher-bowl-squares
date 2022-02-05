@@ -7,7 +7,8 @@ CREATE TABLE users (
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now(),
   username STRING UNIQUE NOT NULL,
-  password_hash STRING NOT NULL
+  password_hash STRING NOT NULL,
+  userid STRING NOT NULL
 );
 
 CREATE TABLE games (
