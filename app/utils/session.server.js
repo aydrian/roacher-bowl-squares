@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import { createCookieSessionStorage, redirect } from "remix";
 import { db } from "./db.server";
 
-export async function register({ username, password }) {
+export async function register({ username, password, userid }) {
   const passwordHash = await bcrypt.hash(password, 10);
   return db.user.create({
     data: { username, passwordHash, userid }

@@ -1,5 +1,6 @@
 import { Form, useActionData } from "remix";
 import { db } from "~/utils/db.server";
+import { createUserSession, register } from "~/utils/session.server";
 import stylesUrl from "~/styles/login.css";
 
 export const links = () => {
