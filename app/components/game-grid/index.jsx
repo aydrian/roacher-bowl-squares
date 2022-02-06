@@ -19,7 +19,7 @@ export function Grid({ game, participantId = "" }) {
                 <th className="header"></th>
                 {cols.map((i) => {
                   return (
-                    <th className="header" key={i}>
+                    <th className="header team1" key={i}>
                       {i}
                     </th>
                   );
@@ -32,7 +32,7 @@ export function Grid({ game, participantId = "" }) {
               return (
                 <tr key={row}>
                   {state !== "INIT" && rows && (
-                    <th className="header">{rows[row]}</th>
+                    <th className="header team2">{rows[row]}</th>
                   )}
                   {range(10).map((col) => {
                     const claim = claims.find(

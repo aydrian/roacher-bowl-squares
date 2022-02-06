@@ -20,6 +20,7 @@ html,
 body {
   height: 100%;
   background-color: var(--light-grey);
+  font-family: "Roboto Slab", serif;
 }
 
 body {
@@ -56,6 +57,10 @@ h6 {
 #root,
 #__next {
   isolation: isolate;
+}
+
+input {
+  font-family: "Roboto", sans-serif;
 }
 
 .button {

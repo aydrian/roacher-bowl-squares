@@ -114,9 +114,9 @@ export default function GameRoute() {
 
   return (
     <div>
-      <h2>
-        Game {game.slug} {isHost && "(hosting)"}
-      </h2>
+      <h1>
+        {game.slug} {isHost && "(hosting)"}
+      </h1>
       <p>
         Participants: {participants.length}{" "}
         {game.state === "INIT" &&
