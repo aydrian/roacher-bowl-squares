@@ -1,4 +1,7 @@
 import { Form } from "remix";
+import styles from "./styles.css";
+
+export const links = () => [{ rel: "stylesheet", href: styles }];
 
 export function ScoreBoard({ game, isHost }) {
   const { board, state, scores } = game;

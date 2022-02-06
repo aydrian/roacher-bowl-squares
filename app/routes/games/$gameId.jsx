@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, useLoaderData } from "remix";
 import Pusher from "pusher-js";
-import { Grid } from "~/components/game-grid";
-import { ScoreBoard } from "~/components/score-board";
+import { Grid, links as gameGridLinks } from "~/components/game-grid";
+import { ScoreBoard, links as scoreBoardLinks } from "~/components/score-board";
 import {
   claimSquare,
   countClaims,
@@ -16,11 +16,13 @@ import {
 } from "~/utils/game-logic.server";
 import { sendRefresh } from "~/utils/pusher.server";
 import { requireUserId } from "~/utils/session.server";
-import stylesUrl from "../../styles/game.css";
+import stylesUrl from "~/styles/games/game.css";
 
-export const links = () => {
-  return [{ rel: "stylesheet", href: stylesUrl }];
-};
+export const links = () => [
+  ...gameGridLinks(),
+  ...scoreBoardLinks(),
+  { rel: "stylesheet", href: stylesUrl }
+];
 
 export const loader = async ({ request, params }) => {
   const participantId = await requireUserId(request);
@@ -130,11 +132,11 @@ export default function GameRoute() {
           </Form>
         </div>
       )}
-      {game.state !== "INIT" && <ScoreBoard game={game} isHost={isHost} />}
       <p>
         Claimed {numClaims}, total cost: {numClaims * game.claimCost}
       </p>
-      <Grid game={game} participantId={participantId} />
+      <Grid game={game} participantId={participantId} />{" "}
+      {game.state !== "INIT" && <ScoreBoard game={game} isHost={isHost} />}
     </div>
   );
 }

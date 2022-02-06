@@ -8,6 +8,12 @@ import {
 } from "remix";
 import { db } from "~/utils/db.server";
 import { requireUserId } from "~/utils/session.server";
+import { GameList, links as gameListLinks } from "~/components/game-list";
+
+export const links = () => [
+  ...gameListLinks()
+  //{ rel: "stylesheet", href: styles }
+];
 
 export const loader = async ({ request }) => {
   const userId = await requireUserId(request);
@@ -16,11 +22,12 @@ export const loader = async ({ request }) => {
     orderBy: { createdAt: "desc" }
   });
 
-  const playingGames = await db.claim.findMany({
+  const claims = await db.claim.findMany({
     select: { game: true },
     distinct: ["gameId"],
     where: { participantId: userId }
   });
+  const playingGames = claims.map((claim) => claim.game);
 
   return { hostedGames, playingGames };
 };
@@ -62,33 +69,13 @@ export default function Index() {
       <Link to="new">Create a Game</Link>
       <h2>Hosted Games</h2>
       {hostedGames.length ? (
-        <ul>
-          {hostedGames.map((game) => {
-            return (
-              <li key={game.id}>
-                <Link to={game.id}>
-                  {game.slug} - {game.createdAt} [{game.state}]
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        <GameList games={hostedGames} />
       ) : (
         <div>No hosted games. Create a new one.</div>
       )}
       <h2>Participating Games</h2>
       {playingGames.length ? (
-        <ul>
-          {playingGames.map(({ game }) => {
-            return (
-              <li key={game.id}>
-                <Link to={game.id}>
-                  {game.slug} - {game.createdAt} [{game.state}]
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        <GameList games={playingGames} />
       ) : (
         <div>You are not participating in any games. Join one.</div>
       )}
