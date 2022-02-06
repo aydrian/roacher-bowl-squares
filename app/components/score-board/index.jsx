@@ -15,10 +15,9 @@ export function ScoreBoard({ game, isHost }) {
   ];
 
   return (
-    <div className="scoreBox-wrapper">
-      <h3>Score Board</h3>
+    <div className="score-board-wrapper">
       <Form method="post" replace>
-        <table>
+        <table className="score-board">
           <thead>
             <tr>
               <th></th>

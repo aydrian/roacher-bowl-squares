@@ -7,7 +7,7 @@ function GameItem({ game }) {
   return (
     <li className="game-item">
       <Link to={`/games/${game.id}`}>
-        {game.slug} - {game.createdAt} [{game.state}]
+        {game.slug} [{game.state}]
       </Link>
       <img src="arrow.svg" width={15} />
     </li>

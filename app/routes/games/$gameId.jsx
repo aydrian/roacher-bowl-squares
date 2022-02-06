@@ -90,6 +90,10 @@ export default function GameRoute() {
     useLoaderData();
   let navigate = useNavigate();
   const remainingSquares = 100 - game.claims.length;
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD"
+  });
 
   if (game.state !== "FINAL") {
     useEffect(() => {
@@ -132,10 +136,11 @@ export default function GameRoute() {
           </Form>
         </div>
       )}
+      <Grid game={game} participantId={participantId} />
       <p>
-        Claimed {numClaims}, total cost: {numClaims * game.claimCost}
+        {numClaims} squares claimed,{" "}
+        {formatter.format(numClaims * game.claimCost)} total cost
       </p>
-      <Grid game={game} participantId={participantId} />{" "}
       {game.state !== "INIT" && <ScoreBoard game={game} isHost={isHost} />}
     </div>
   );
