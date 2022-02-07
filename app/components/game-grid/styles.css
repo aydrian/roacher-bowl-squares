@@ -5,7 +5,8 @@
   grid-template-areas:
     ". team1"
     "team2 grid";
-  width: 99vw;
+  width: 100vw;
+  height: 100vw;
   margin-left: -20px;
   margin-right: -20px;
 }
