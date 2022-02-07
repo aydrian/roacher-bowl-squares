@@ -3,4 +3,21 @@ header {
   justify-content: space-between;
   background-color: white;
   box-shadow: 0px 2px 2px hsla(0, 0%, 0%, 0.12);
+  padding: 16px 20px;
+}
+
+.header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-wrapper {
+  font-family: "Roboto", sans-serif;
+  font-size: 0.875rem;
+  font-weight: bold;
+}
+
+.user-wrapper span {
+  color: var(--purple);
 }

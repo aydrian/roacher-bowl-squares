@@ -6,7 +6,8 @@
     ". team1"
     "team2 grid";
   width: 99vw;
-  /* height: 99vw; */
+  margin-left: -20px;
+  margin-right: -20px;
 }
 
 .table-wrapper {

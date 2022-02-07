@@ -9,17 +9,18 @@ export const links = () => [
   { rel: "stylesheet", href: styles }
 ];
 
+const quarters = [
+  ["Q1"],
+  ["Q2", ["Q2", "Q3", "Q4", "FINAL"]],
+  ["Q3", ["Q3", "Q4", "FINAL"]],
+  ["Q4", ["Q4", "FINAL"]]
+];
+
 export function ScoreBoard({ game, isHost }) {
   // TODO: Make dialog close on submit
   const [showDialog, setShowDialog] = useState(false);
   const { board, state, scores } = game;
   const [team1 = "Team 1", team2 = "Team 2"] = board.teams;
-  const quarters = [
-    ["Q1"],
-    ["Q2", ["Q2", "Q3", "Q4", "FINAL"]],
-    ["Q3", ["Q3", "Q4", "FINAL"]],
-    ["Q4", ["Q4", "FINAL"]]
-  ];
 
   return (
     <div className="score-board-wrapper">
@@ -48,11 +49,19 @@ export function ScoreBoard({ game, isHost }) {
           <DialogOverlay
             isOpen={showDialog}
             onDismiss={() => setShowDialog(false)}
-            style={{ backgroundColor: "hsla(0, 0%, 10%, 0.96)" }}
+            style={{
+              paddingLeft: "20px",
+              paddingRight: "20px",
+              backgroundColor: "hsla(0, 0%, 10%, 0.96)"
+            }}
           >
             <DialogContent
               aria-label="Join a game"
+<<<<<<< HEAD
               style={{ borderRadius: "15px", width: "80vw" }}
+=======
+              style={{ width: "auto", borderRadius: "15px" }}
+>>>>>>> 779f85e69f367dc5deb1d7be782a483aec576be1
             >
               <h3>{game.slug}</h3>
               <p>Score Keeping</p>
@@ -69,12 +78,6 @@ export function EditScoreBoard({ game, isHost }) {
   const { board, state, scores } = game;
   const [team1 = "Team 1", team2 = "Team 2"] = board.teams;
   // scores = [[0,0], [0,0], [0,0], [0,0]]
-  const quarters = [
-    ["Q1", "Q1"],
-    ["Q2", "Q2", ["Q2", "Q3", "Q4", "FINAL"]],
-    ["Q3", "Q3", ["Q3", "Q4", "FINAL"]],
-    ["Q4", "Q4", ["Q4", "FINAL"]]
-  ];
 
   return (
     <div className="edit-score-board">
@@ -88,13 +91,12 @@ export function EditScoreBoard({ game, isHost }) {
             </tr>
           </thead>
           <tbody>
-            {quarters.map(([quarter, label, showFor], i) => (
+            {quarters.map(([quarter, showFor], i) => (
               <ScoreRow
                 key={quarter}
                 state={state}
                 scores={scores[i]}
                 quarter={quarter}
-                label={label}
                 isHost={isHost}
                 showFor={showFor}
               />
@@ -104,6 +106,7 @@ export function EditScoreBoard({ game, isHost }) {
             <tfoot>
               <tr>
                 <td colSpan={3}>
+<<<<<<< HEAD
                   <button
                     type="submit"
                     className="button primary"
@@ -120,6 +123,26 @@ export function EditScoreBoard({ game, isHost }) {
                   >
                     Lock In
                   </button>
+=======
+                  <div className="button-wrapper">
+                    <button
+                      type="submit"
+                      className="button primary"
+                      name="scoreAction"
+                      value="update"
+                    >
+                      Update
+                    </button>
+                    <button
+                      type="submit"
+                      className="button secondary"
+                      name="scoreAction"
+                      value="lockIn"
+                    >
+                      Lock In
+                    </button>
+                  </div>
+>>>>>>> 779f85e69f367dc5deb1d7be782a483aec576be1
                 </td>
               </tr>
             </tfoot>
@@ -134,18 +157,21 @@ function ScoreRow({
   state,
   scores,
   quarter,
-  label,
   isHost,
   showFor = ["Q1", "Q2", "Q3", "Q4", "FINAL"]
 }) {
   return showFor.includes(state) ? (
     <tr>
-      <th>{label}</th>
+      <th>{quarter}</th>
       <td>
         {isHost && state === quarter ? (
           <input
             type="number"
+<<<<<<< HEAD
             className="score-input"
+=======
+            className="input-score-number"
+>>>>>>> 779f85e69f367dc5deb1d7be782a483aec576be1
             name="score1"
             defaultValue={scores[0]}
           />
@@ -157,7 +183,11 @@ function ScoreRow({
         {isHost && state === quarter ? (
           <input
             type="number"
+<<<<<<< HEAD
             className="score-input"
+=======
+            className="input-score-number"
+>>>>>>> 779f85e69f367dc5deb1d7be782a483aec576be1
             name="score2"
             defaultValue={scores[1]}
           />

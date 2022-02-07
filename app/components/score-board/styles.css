@@ -46,6 +46,22 @@
   border-left: 0;
 }
 
+<<<<<<< HEAD
 .score-input {
+=======
+.score-board {
+  table-layout: fixed;
+  border-collapse: collapse;
+  width: 100%;
+  height: 100%;
+}
+
+.button-wrapper {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.input-score-number {
+>>>>>>> 779f85e69f367dc5deb1d7be782a483aec576be1
   width: 115px;
 }
