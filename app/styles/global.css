@@ -59,8 +59,27 @@ h6 {
   isolation: isolate;
 }
 
+h2 {
+  font-weight: 500;
+}
+
+h5 {
+  color: hsla(216, 23%, 36%, 1);
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 15px 12px;
+}
+
 input {
   font-family: "Roboto", sans-serif;
+}
+
+.max-width-wrapper {
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .button {

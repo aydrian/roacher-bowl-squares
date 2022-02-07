@@ -61,41 +61,45 @@ export default function Index() {
   const actionData = useActionData();
   return (
     <div>
-      <h2>Hosted Games</h2>
-      <Link to="new">Create a Game</Link>
+      <div className="header-wrapper">
+        <h2>Hosted Games</h2>
+        <Link to="new">Create a Game</Link>
+      </div>
       {hostedGames.length ? (
         <GameList games={hostedGames} />
       ) : (
         <div>No hosted games. Create a new one.</div>
       )}
-      <h2>Participating Games</h2>
-      <button
-        type="button"
-        className="button primary"
-        onClick={() => setShowDialog(true)}
-      >
-        Join a game
-      </button>
-      <DialogOverlay
-        isOpen={showDialog}
-        onDismiss={() => setShowDialog(false)}
-        style={{ backgroundColor: "hsla(0, 0%, 10%, 0.96)" }}
-      >
-        <DialogContent
-          aria-label="Join a game"
-          style={{ borderRadius: "15px" }}
+      <div className="header-wrapper">
+        <h2>Participating in</h2>
+        <button
+          type="button"
+          className="button primary"
+          onClick={() => setShowDialog(true)}
         >
-          <Form method="post">
-            <label>
-              Game code: <input type="text" name="slug" />
-            </label>
-            <button type="submit" className="button primary">
-              Join now
-            </button>
-            {actionData?.formError && <p>{actionData.formError}</p>}
-          </Form>
-        </DialogContent>
-      </DialogOverlay>
+          Join a game
+        </button>
+        <DialogOverlay
+          isOpen={showDialog}
+          onDismiss={() => setShowDialog(false)}
+          style={{ backgroundColor: "hsla(0, 0%, 10%, 0.96)" }}
+        >
+          <DialogContent
+            aria-label="Join a game"
+            style={{ borderRadius: "15px" }}
+          >
+            <Form method="post">
+              <label>
+                Game code: <input type="text" name="slug" />
+              </label>
+              <button type="submit" className="button primary">
+                Join now
+              </button>
+              {actionData?.formError && <p>{actionData.formError}</p>}
+            </Form>
+          </DialogContent>
+        </DialogOverlay>
+      </div>
       {playingGames.length ? (
         <GameList games={playingGames} />
       ) : (

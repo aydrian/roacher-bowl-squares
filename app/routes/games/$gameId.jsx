@@ -118,15 +118,15 @@ export default function GameRoute() {
 
   return (
     <div>
-      <h1>
-        {game.slug} {isHost && "(hosting)"}
-      </h1>
-      <p>
-        Participants: {participants.length}{" "}
-        {game.state === "INIT" &&
-          `Remaining Squares: 
+      <h5>{game.slug}</h5>
+      {false && (
+        <p>
+          Participants: {participants.length}{" "}
+          {game.state === "INIT" &&
+            `Remaining Squares: 
         ${remainingSquares}`}
-      </p>
+        </p>
+      )}
       {isHost && game.state === "INIT" && remainingSquares === 0 && (
         <div>
           <Form replace method="post">
@@ -137,10 +137,19 @@ export default function GameRoute() {
         </div>
       )}
       <Grid game={game} participantId={participantId} />
-      <p>
-        {numClaims} squares claimed,{" "}
-        {formatter.format(numClaims * game.claimCost)} total cost
-      </p>
+      {game.state === "INIT" && (
+        <div className="claim-totals">
+          <div>
+            <span className="claim-number">{numClaims}</span> squares claimed
+          </div>
+          <div>
+            <span className="claim-number">
+              {formatter.format(numClaims * game.claimCost)}
+            </span>{" "}
+            total cost
+          </div>
+        </div>
+      )}
       {game.state !== "INIT" && <ScoreBoard game={game} isHost={isHost} />}
     </div>
   );

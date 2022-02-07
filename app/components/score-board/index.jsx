@@ -9,17 +9,18 @@ export const links = () => [
   { rel: "stylesheet", href: styles }
 ];
 
+const quarters = [
+  ["Q1"],
+  ["Q2", ["Q2", "Q3", "Q4", "FINAL"]],
+  ["Q3", ["Q3", "Q4", "FINAL"]],
+  ["Q4", ["Q4", "FINAL"]]
+];
+
 export function ScoreBoard({ game, isHost }) {
   // TODO: Make dialog close on submit
   const [showDialog, setShowDialog] = useState(false);
   const { board, state, scores } = game;
   const [team1 = "Team 1", team2 = "Team 2"] = board.teams;
-  const quarters = [
-    ["Q1"],
-    ["Q2", ["Q2", "Q3", "Q4", "FINAL"]],
-    ["Q3", ["Q3", "Q4", "FINAL"]],
-    ["Q4", ["Q4", "FINAL"]]
-  ];
 
   return (
     <div className="score-board-wrapper">
@@ -48,11 +49,15 @@ export function ScoreBoard({ game, isHost }) {
           <DialogOverlay
             isOpen={showDialog}
             onDismiss={() => setShowDialog(false)}
-            style={{ backgroundColor: "hsla(0, 0%, 10%, 0.96)" }}
+            style={{
+              paddingLeft: "20px",
+              paddingRight: "20px",
+              backgroundColor: "hsla(0, 0%, 10%, 0.96)"
+            }}
           >
             <DialogContent
               aria-label="Join a game"
-              style={{ borderRadius: "15px" }}
+              style={{ width: "auto", borderRadius: "15px" }}
             >
               <EditScoreBoard game={game} isHost={isHost} />
             </DialogContent>
@@ -67,12 +72,6 @@ export function EditScoreBoard({ game, isHost }) {
   const { board, state, scores } = game;
   const [team1 = "Team 1", team2 = "Team 2"] = board.teams;
   // scores = [[0,0], [0,0], [0,0], [0,0]]
-  const quarters = [
-    ["Q1", "Q1"],
-    ["Q2", "Q2", ["Q2", "Q3", "Q4", "FINAL"]],
-    ["Q3", "Q3", ["Q3", "Q4", "FINAL"]],
-    ["Q4", "Q4", ["Q4", "FINAL"]]
-  ];
 
   return (
     <div>
@@ -86,13 +85,12 @@ export function EditScoreBoard({ game, isHost }) {
             </tr>
           </thead>
           <tbody>
-            {quarters.map(([quarter, label, showFor], i) => (
+            {quarters.map(([quarter, showFor], i) => (
               <ScoreRow
                 key={quarter}
                 state={state}
                 scores={scores[i]}
                 quarter={quarter}
-                label={label}
                 isHost={isHost}
                 showFor={showFor}
               />
@@ -102,12 +100,24 @@ export function EditScoreBoard({ game, isHost }) {
             <tfoot>
               <tr>
                 <td colSpan={3}>
-                  <button type="submit" name="scoreAction" value="update">
-                    Update
-                  </button>
-                  <button type="submit" name="scoreAction" value="lockIn">
-                    Lock In
-                  </button>
+                  <div className="button-wrapper">
+                    <button
+                      type="submit"
+                      className="button primary"
+                      name="scoreAction"
+                      value="update"
+                    >
+                      Update
+                    </button>
+                    <button
+                      type="submit"
+                      className="button secondary"
+                      name="scoreAction"
+                      value="lockIn"
+                    >
+                      Lock In
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tfoot>
@@ -122,23 +132,32 @@ function ScoreRow({
   state,
   scores,
   quarter,
-  label,
   isHost,
   showFor = ["Q1", "Q2", "Q3", "Q4", "FINAL"]
 }) {
   return showFor.includes(state) ? (
     <tr>
-      <th>{label}</th>
+      <th>{quarter}</th>
       <td>
         {isHost && state === quarter ? (
-          <input type="number" name="score1" defaultValue={scores[0]} />
+          <input
+            type="number"
+            className="input-score-number"
+            name="score1"
+            defaultValue={scores[0]}
+          />
         ) : (
           <span>{scores[0]}</span>
         )}
       </td>
       <td>
         {isHost && state === quarter ? (
-          <input type="number" name="score2" defaultValue={scores[1]} />
+          <input
+            type="number"
+            className="input-score-number"
+            name="score2"
+            defaultValue={scores[1]}
+          />
         ) : (
           <span>{scores[1]}</span>
         )}

@@ -72,11 +72,11 @@ export default function Index() {
   const actionData = useActionData();
   const [searchParams] = useSearchParams();
   return (
-    <>
+    <div>
       <header>
         <img src="/rbs-logo.svg" width={190} style={{ margin: "auto" }} />
       </header>
-      <main>
+      <main className="max-width-wrapper">
         <Form method="post">
           <input
             type="hidden"
@@ -160,6 +160,6 @@ export default function Index() {
           </div>
         </Form>
       </main>
-    </>
+    </div>
   );
 }

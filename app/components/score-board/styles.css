@@ -44,3 +44,19 @@
   background-color: var(--dark-grey);
   border-left: 0;
 }
+
+.score-board {
+  table-layout: fixed;
+  border-collapse: collapse;
+  width: 100%;
+  height: 100%;
+}
+
+.button-wrapper {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.input-score-number {
+  width: 115px;
+}

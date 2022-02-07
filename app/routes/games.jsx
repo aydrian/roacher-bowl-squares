@@ -20,14 +20,14 @@ export default function GamesRoute() {
         <Link to="/games">
           <img src="/rbs-logo.svg" width={80} />
         </Link>
-        <div>
-          Hello, {user.username}{" "}
+        <div className="user-wrapper">
+          Hello, <span>{user.username}</span>
           <form action="/logout" method="post">
             <button type="submit">Logout</button>
           </form>
         </div>
       </header>
-      <main>
+      <main className="max-width-wrapper">
         <Outlet />
       </main>
     </div>

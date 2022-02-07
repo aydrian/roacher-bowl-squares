@@ -1,1 +1,12 @@
+.claim-totals {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 0.875rem;
+  font-weight: 400;
+  margin-top: 15px;
+}
 
+.claim-number {
+  color: var(--purple);
+}
