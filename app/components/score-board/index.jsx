@@ -52,8 +52,10 @@ export function ScoreBoard({ game, isHost }) {
           >
             <DialogContent
               aria-label="Join a game"
-              style={{ borderRadius: "15px" }}
+              style={{ borderRadius: "15px", width: "80vw" }}
             >
+              <h3>{game.slug}</h3>
+              <p>Score Keeping</p>
               <EditScoreBoard game={game} isHost={isHost} />
             </DialogContent>
           </DialogOverlay>
@@ -75,7 +77,7 @@ export function EditScoreBoard({ game, isHost }) {
   ];
 
   return (
-    <div>
+    <div className="edit-score-board">
       <Form method="post" replace>
         <table className="score-board">
           <thead>
@@ -102,10 +104,20 @@ export function EditScoreBoard({ game, isHost }) {
             <tfoot>
               <tr>
                 <td colSpan={3}>
-                  <button type="submit" name="scoreAction" value="update">
+                  <button
+                    type="submit"
+                    className="button primary"
+                    name="scoreAction"
+                    value="update"
+                  >
                     Update
                   </button>
-                  <button type="submit" name="scoreAction" value="lockIn">
+                  <button
+                    type="submit"
+                    className="button secondary"
+                    name="scoreAction"
+                    value="lockIn"
+                  >
                     Lock In
                   </button>
                 </td>
@@ -131,14 +143,24 @@ function ScoreRow({
       <th>{label}</th>
       <td>
         {isHost && state === quarter ? (
-          <input type="number" name="score1" defaultValue={scores[0]} />
+          <input
+            type="number"
+            className="score-input"
+            name="score1"
+            defaultValue={scores[0]}
+          />
         ) : (
           <span>{scores[0]}</span>
         )}
       </td>
       <td>
         {isHost && state === quarter ? (
-          <input type="number" name="score2" defaultValue={scores[1]} />
+          <input
+            type="number"
+            className="score-input"
+            name="score2"
+            defaultValue={scores[1]}
+          />
         ) : (
           <span>{scores[1]}</span>
         )}

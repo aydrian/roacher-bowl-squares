@@ -39,8 +39,13 @@
   grid-area: team1;
   background-color: var(--purple);
 }
+
 .quarter-score.team2 {
   grid-area: team2;
   background-color: var(--dark-grey);
   border-left: 0;
+}
+
+.score-input {
+  width: 115px;
 }
