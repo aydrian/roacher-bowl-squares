@@ -17,10 +17,15 @@ import {
 import { sendRefresh } from "~/utils/pusher.server";
 import { requireUserId } from "~/utils/session.server";
 import stylesUrl from "~/styles/games/game.css";
+import {
+  PayoutBoard,
+  links as payoutBoardLinks
+} from "~/components/payout-board";
 
 export const links = () => [
   ...gameGridLinks(),
   ...scoreBoardLinks(),
+  ...payoutBoardLinks(),
   { rel: "stylesheet", href: stylesUrl }
 ];
 
@@ -118,7 +123,17 @@ export default function GameRoute() {
 
   return (
     <div>
-      <h5>{game.slug}</h5>
+      <div className="title-wrapper">
+        <h5>{game.slug}</h5>{" "}
+        {game.state === "INIT" && (
+          <div className="instructions">
+            <div>Select the squares you'd like to claim.</div>
+            <div className="claim-cost">
+              {formatter.format(game.claimCost)} / square
+            </div>
+          </div>
+        )}
+      </div>
       {false && (
         <p>
           Participants: {participants.length}{" "}
@@ -150,7 +165,13 @@ export default function GameRoute() {
           </div>
         </div>
       )}
-      {game.state !== "INIT" && <ScoreBoard game={game} isHost={isHost} />}
+      {game.state !== "INIT" && (
+        <>
+          <ScoreBoard game={game} isHost={isHost} />
+          <h5>Player Payouts</h5>
+          <PayoutBoard winners={game.winners} claimCost={game.claimCost} />
+        </>
+      )}
     </div>
   );
 }

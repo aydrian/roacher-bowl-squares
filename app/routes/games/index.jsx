@@ -62,8 +62,8 @@ export default function Index() {
   return (
     <div>
       <div className="header-wrapper">
-        <h2>Hosted Games</h2>
-        <Link to="new">Create a Game</Link>
+        <h2>Hosted games</h2>
+        <Link to="new">New Game</Link>
       </div>
       {hostedGames.length ? (
         <GameList games={hostedGames} />
