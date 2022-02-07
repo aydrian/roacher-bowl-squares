@@ -57,11 +57,7 @@ export function ScoreBoard({ game, isHost }) {
           >
             <DialogContent
               aria-label="Join a game"
-<<<<<<< HEAD
-              style={{ borderRadius: "15px", width: "80vw" }}
-=======
               style={{ width: "auto", borderRadius: "15px" }}
->>>>>>> 779f85e69f367dc5deb1d7be782a483aec576be1
             >
               <h3>{game.slug}</h3>
               <p>Score Keeping</p>
@@ -106,24 +102,6 @@ export function EditScoreBoard({ game, isHost }) {
             <tfoot>
               <tr>
                 <td colSpan={3}>
-<<<<<<< HEAD
-                  <button
-                    type="submit"
-                    className="button primary"
-                    name="scoreAction"
-                    value="update"
-                  >
-                    Update
-                  </button>
-                  <button
-                    type="submit"
-                    className="button secondary"
-                    name="scoreAction"
-                    value="lockIn"
-                  >
-                    Lock In
-                  </button>
-=======
                   <div className="button-wrapper">
                     <button
                       type="submit"
@@ -142,7 +120,6 @@ export function EditScoreBoard({ game, isHost }) {
                       Lock In
                     </button>
                   </div>
->>>>>>> 779f85e69f367dc5deb1d7be782a483aec576be1
                 </td>
               </tr>
             </tfoot>
@@ -167,11 +144,7 @@ function ScoreRow({
         {isHost && state === quarter ? (
           <input
             type="number"
-<<<<<<< HEAD
-            className="score-input"
-=======
             className="input-score-number"
->>>>>>> 779f85e69f367dc5deb1d7be782a483aec576be1
             name="score1"
             defaultValue={scores[0]}
           />
@@ -183,11 +156,7 @@ function ScoreRow({
         {isHost && state === quarter ? (
           <input
             type="number"
-<<<<<<< HEAD
-            className="score-input"
-=======
             className="input-score-number"
->>>>>>> 779f85e69f367dc5deb1d7be782a483aec576be1
             name="score2"
             defaultValue={scores[1]}
           />
