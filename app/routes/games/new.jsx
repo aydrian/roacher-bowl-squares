@@ -52,12 +52,14 @@ export default function NewGameRoute() {
         </div>
         <div>
           <label>
-            Team 1: <input type="text" name="team1" />
+            Team 1:{" "}
+            <input type="text" name="team1" defaultValue="Los Angeles Rams" />
           </label>
         </div>
         <div>
           <label>
-            Team 2: <input type="text" name="team2" />
+            Team 2:{" "}
+            <input type="text" name="team2" defaultValue="Cincinnati Bengals" />
           </label>
         </div>
         <div>
