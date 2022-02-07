@@ -86,15 +86,22 @@ export default function Index() {
         >
           <DialogContent
             aria-label="Join a game"
-            style={{ borderRadius: "15px" }}
+            style={{
+              width: "auto",
+              paddingLeft: "20px",
+              paddingRight: "20px",
+              borderRadius: "15px"
+            }}
           >
             <Form method="post">
-              <label>
-                Game code: <input type="text" name="slug" />
+              <label className="vertical">
+                Game code <input type="text" name="slug" />
               </label>
-              <button type="submit" className="button primary">
-                Join now
-              </button>
+              <div className="form-action-wrapper">
+                <button type="submit" className="button primary">
+                  Join now
+                </button>
+              </div>
               {actionData?.formError && <p>{actionData.formError}</p>}
             </Form>
           </DialogContent>

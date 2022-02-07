@@ -7,7 +7,7 @@ import {
   useSearchParams
 } from "remix";
 import { createUserSession, getUserId, login } from "~/utils/session.server";
-import stylesUrl from "~/styles/login.css";
+import stylesUrl from "~/styles/index.css";
 
 export const links = () => {
   return [{ rel: "stylesheet", href: stylesUrl }];
@@ -77,88 +77,90 @@ export default function Index() {
         <img src="/rbs-logo.svg" width={190} style={{ margin: "auto" }} />
       </header>
       <main className="max-width-wrapper">
-        <Form method="post">
-          <input
-            type="hidden"
-            name="redirectTo"
-            value={searchParams.get("redirectTo") ?? undefined}
-          />
-          <div>
-            <label>
-              Username{" "}
-              <input
-                type="text"
-                name="username"
-                defaultValue={actionData?.fields?.username}
-                aria-invalid={Boolean(actionData?.fieldErrors?.username)}
-                aria-describedby={
-                  actionData?.fieldErrors?.username
-                    ? "username-error"
-                    : undefined
-                }
-              />
-            </label>
-            {actionData?.fieldErrors?.username ? (
-              <p
-                className="form-validation-error"
-                role="alert"
-                id="username-error"
+        <div className="form-wrapper">
+          <Form method="post">
+            <input
+              type="hidden"
+              name="redirectTo"
+              value={searchParams.get("redirectTo") ?? undefined}
+            />
+            <div>
+              <label>
+                Username{" "}
+                <input
+                  type="text"
+                  name="username"
+                  defaultValue={actionData?.fields?.username}
+                  aria-invalid={Boolean(actionData?.fieldErrors?.username)}
+                  aria-describedby={
+                    actionData?.fieldErrors?.username
+                      ? "username-error"
+                      : undefined
+                  }
+                />
+              </label>
+              {actionData?.fieldErrors?.username ? (
+                <p
+                  className="form-validation-error"
+                  role="alert"
+                  id="username-error"
+                >
+                  {actionData?.fieldErrors.username}
+                </p>
+              ) : null}
+            </div>
+            <div>
+              <label>
+                Password{" "}
+                <input
+                  type="password"
+                  name="password"
+                  defaultValue={actionData?.fields?.password}
+                  aria-invalid={
+                    Boolean(actionData?.fieldErrors?.password) || undefined
+                  }
+                  aria-describedby={
+                    actionData?.fieldErrors?.password
+                      ? "password-error"
+                      : undefined
+                  }
+                />
+              </label>
+              {actionData?.fieldErrors?.password ? (
+                <p
+                  className="form-validation-error"
+                  role="alert"
+                  id="password-error"
+                >
+                  {actionData?.fieldErrors.password}
+                </p>
+              ) : null}
+            </div>
+            <div id="form-error-message">
+              {actionData?.formError ? (
+                <p className="form-validation-error" role="alert">
+                  {actionData?.formError}
+                </p>
+              ) : null}
+            </div>
+            <div className="form-action-wrapper">
+              <Link
+                to="/register"
+                className="button secondary"
+                style={{ width: "130px" }}
               >
-                {actionData?.fieldErrors.username}
-              </p>
-            ) : null}
-          </div>
-          <div>
-            <label>
-              Password{" "}
-              <input
-                type="password"
-                name="password"
-                defaultValue={actionData?.fields?.password}
-                aria-invalid={
-                  Boolean(actionData?.fieldErrors?.password) || undefined
-                }
-                aria-describedby={
-                  actionData?.fieldErrors?.password
-                    ? "password-error"
-                    : undefined
-                }
-              />
-            </label>
-            {actionData?.fieldErrors?.password ? (
-              <p
-                className="form-validation-error"
-                role="alert"
-                id="password-error"
+                Register
+              </Link>
+              <button
+                type="submit"
+                className="button primary"
+                style={{ width: "130px" }}
               >
-                {actionData?.fieldErrors.password}
-              </p>
-            ) : null}
-          </div>
-          <div id="form-error-message">
-            {actionData?.formError ? (
-              <p className="form-validation-error" role="alert">
-                {actionData?.formError}
-              </p>
-            ) : null}
-          </div>
-          <div className="login-action-wrapper">
-            <Link
-              to="/register"
-              className="button secondary"
-              style={{ width: "130px" }}
-            >
-              Register
-            </Link>
-            <button
-              type="submit"
-              className="button primary"
-              style={{ width: "130px" }}
-            >
-              Log in
-            </button>
-          </div>
-        </Form>
+                Log in
+              </button>
+            </div>
+          </Form>
+        </div>
       </main>
     </div>
   );

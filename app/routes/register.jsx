@@ -1,7 +1,7 @@
 import { Form, useActionData } from "remix";
 import { db } from "~/utils/db.server";
 import { createUserSession, register } from "~/utils/session.server";
-import stylesUrl from "~/styles/login.css";
+import stylesUrl from "~/styles/index.css";
 
 export const links = () => {
   return [{ rel: "stylesheet", href: stylesUrl }];
@@ -79,102 +79,104 @@ export default function Index() {
       </header>
       <main>
         <h1>New user</h1>
-        <Form method="post">
-          <div>
-            <label>
-              Username{" "}
-              <input
-                type="text"
-                name="username"
-                defaultValue={actionData?.fields?.username}
-                aria-invalid={Boolean(actionData?.fieldErrors?.username)}
-                aria-describedby={
-                  actionData?.fieldErrors?.username
-                    ? "username-error"
-                    : undefined
-                }
-              />
-            </label>
-            {actionData?.fieldErrors?.username ? (
-              <p
-                className="form-validation-error"
-                role="alert"
-                id="username-error"
+        <div className="form-wrapper">
+          <Form method="post">
+            <div>
+              <label>
+                Username{" "}
+                <input
+                  type="text"
+                  name="username"
+                  defaultValue={actionData?.fields?.username}
+                  aria-invalid={Boolean(actionData?.fieldErrors?.username)}
+                  aria-describedby={
+                    actionData?.fieldErrors?.username
+                      ? "username-error"
+                      : undefined
+                  }
+                />
+              </label>
+              {actionData?.fieldErrors?.username ? (
+                <p
+                  className="form-validation-error"
+                  role="alert"
+                  id="username-error"
+                >
+                  {actionData?.fieldErrors.username}
+                </p>
+              ) : null}
+            </div>
+            <div>
+              <label>
+                Password
+                <input
+                  type="password"
+                  name="password"
+                  defaultValue={actionData?.fields?.password}
+                  aria-invalid={
+                    Boolean(actionData?.fieldErrors?.password) || undefined
+                  }
+                  aria-describedby={
+                    actionData?.fieldErrors?.password
+                      ? "password-error"
+                      : undefined
+                  }
+                />
+              </label>
+              {actionData?.fieldErrors?.password ? (
+                <p
+                  className="form-validation-error"
+                  role="alert"
+                  id="password-error"
+                >
+                  {actionData?.fieldErrors.password}
+                </p>
+              ) : null}
+            </div>
+            <div>
+              <label>
+                User ID (3 characters){" "}
+                <input
+                  type="text"
+                  name="userid"
+                  maxLength={3}
+                  defaultValue={actionData?.fields?.userid}
+                  aria-invalid={
+                    Boolean(actionData?.fieldErrors?.userid) || undefined
+                  }
+                  aria-describedby={
+                    actionData?.fieldErrors?.userid ? "userid-error" : undefined
+                  }
+                />
+              </label>
+              {actionData?.fieldErrors?.userid ? (
+                <p
+                  className="form-validation-error"
+                  role="alert"
+                  id="userid-error"
+                >
+                  {actionData?.fieldErrors.userid}
+                </p>
+              ) : null}
+            </div>
+            <div id="form-error-message">
+              {actionData?.formError ? (
+                <p className="form-validation-error" role="alert">
+                  {actionData?.formError}
+                </p>
+              ) : null}
+            </div>
+            <div className="form-action-wrapper">
+              <button
+                type="submit"
+                className="button primary"
+                style={{ width: "130px" }}
               >
-                {actionData?.fieldErrors.username}
-              </p>
-            ) : null}
-          </div>
-          <div>
-            <label>
-              Password
-              <input
-                type="password"
-                name="password"
-                defaultValue={actionData?.fields?.password}
-                aria-invalid={
-                  Boolean(actionData?.fieldErrors?.password) || undefined
-                }
-                aria-describedby={
-                  actionData?.fieldErrors?.password
-                    ? "password-error"
-                    : undefined
-                }
-              />
-            </label>
-            {actionData?.fieldErrors?.password ? (
-              <p
-                className="form-validation-error"
-                role="alert"
-                id="password-error"
-              >
-                {actionData?.fieldErrors.password}
-              </p>
-            ) : null}
-          </div>
-          <div>
-            <label>
-              User ID (3 characters){" "}
-              <input
-                type="text"
-                name="userid"
-                maxLength={3}
-                defaultValue={actionData?.fields?.userid}
-                aria-invalid={
-                  Boolean(actionData?.fieldErrors?.userid) || undefined
-                }
-                aria-describedby={
-                  actionData?.fieldErrors?.userid ? "userid-error" : undefined
-                }
-              />
-            </label>
-            {actionData?.fieldErrors?.userid ? (
-              <p
-                className="form-validation-error"
-                role="alert"
-                id="userid-error"
-              >
-                {actionData?.fieldErrors.userid}
-              </p>
-            ) : null}
-          </div>
-          <div id="form-error-message">
-            {actionData?.formError ? (
-              <p className="form-validation-error" role="alert">
-                {actionData?.formError}
-              </p>
-            ) : null}
-          </div>
-          <div className="login-action-wrapper">
-            <button
-              type="submit"
-              className="button primary"
-              style={{ width: "130px" }}
-            >
-              Start
-            </button>
-          </div>
-        </Form>
+                Start
+              </button>
+            </div>
+          </Form>
+        </div>
       </main>
     </>
   );

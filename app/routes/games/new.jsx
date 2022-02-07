@@ -43,32 +43,40 @@ export default function NewGameRoute() {
   const { randomSlug } = useLoaderData();
   return (
     <div>
-      <p>Create a new game</p>
-      <Form method="post">
-        <div>
-          <label>
-            Code: <input type="text" name="slug" defaultValue={randomSlug} />
-          </label>
-        </div>
-        <div>
-          <label>
-            Team 1:{" "}
-            <input type="text" name="team1" defaultValue="Los Angeles Rams" />
-          </label>
-        </div>
-        <div>
-          <label>
-            Team 2:{" "}
-            <input type="text" name="team2" defaultValue="Cincinnati Bengals" />
-          </label>
-        </div>
-        <div>
-          <label>
-            Cost per Square: <input type="number" name="claimCost" />
-          </label>
-        </div>
-        <button type="submit">Create</button>
-      </Form>
+      <h2>New game</h2>
+      <div className="form-wrapper">
+        <Form method="post">
+          <div>
+            <label>
+              Code: <input type="text" name="slug" defaultValue={randomSlug} />
+            </label>
+          </div>
+          <div>
+            <label>
+              Team 1:{" "}
+              <input type="text" name="team1" defaultValue="Los Angeles Rams" />
+            </label>
+          </div>
+          <div>
+            <label>
+              Team 2:{" "}
+              <input
+                type="text"
+                name="team2"
+                defaultValue="Cincinnati Bengals"
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              Cost per Square: <input type="number" name="claimCost" />
+            </label>
+          </div>
+          <button type="submit" className="button primary">
+            Start
+          </button>
+        </Form>
+      </div>
     </div>
   );
 }
