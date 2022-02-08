@@ -23,7 +23,13 @@ export default function GamesRoute() {
         <div className="user-wrapper">
           Hello, <span>{user.username}</span>
           <form action="/logout" method="post">
-            <button type="submit">Logout</button>
+            <button
+              type="submit"
+              className="button primary"
+              style={{ width: "75px", padding: "5px" }}
+            >
+              Logout
+            </button>
           </form>
         </div>
       </header>

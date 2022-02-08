@@ -13,6 +13,10 @@ header {
 }
 
 .user-wrapper {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
   font-family: "Roboto", sans-serif;
   font-size: 0.875rem;
   font-weight: bold;
