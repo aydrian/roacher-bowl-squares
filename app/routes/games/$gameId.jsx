@@ -86,7 +86,7 @@ export const action = async ({ params, request }) => {
     await sendRefresh(gameId, participantId);
     return "ok";
   }
-  console.log("Got a request", form);
+  // console.log("Got a request", form);
   return "ok";
 };
 

@@ -167,7 +167,6 @@ function updateWinners(winners, quarter, winningClaim) {
       q4Winner = winner;
       break;
   }
-  console.log([q1Winner, q2Winner, q3Winner, q4Winner]);
   return [q1Winner, q2Winner, q3Winner, q4Winner].filter(
     (val) => val !== undefined
   );
