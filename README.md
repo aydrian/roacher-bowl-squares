@@ -1,5 +1,6 @@
 # Roacher Bowl Squares
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/a46f3030-0b41-423a-a5d0-237ea7c54e18/deploy-status)](https://app.netlify.com/sites/roacher-bowl-squares/deploys)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## A Super Bowl Squares app using CockroachDB Serverless
