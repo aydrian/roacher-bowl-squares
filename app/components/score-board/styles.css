@@ -1,0 +1,63 @@
+.score-board-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.score-board-list {
+  display: flex;
+  justify-content: space-around;
+  margin: 10px 0;
+}
+
+.quarter-scores {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "title title"
+    "team1 team2";
+}
+
+.quarter-title {
+  grid-area: title;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.quarter-score {
+  color: white;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 2px solid black;
+  width: 35px;
+}
+
+.quarter-score.team1 {
+  grid-area: team1;
+  background-color: var(--purple);
+}
+
+.quarter-score.team2 {
+  grid-area: team2;
+  background-color: var(--dark-grey);
+  border-left: 0;
+}
+
+.score-board {
+  table-layout: fixed;
+  border-collapse: collapse;
+  width: 100%;
+  height: 100%;
+}
+
+.button-wrapper {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.input-score-number {
+  width: 90%;
+}

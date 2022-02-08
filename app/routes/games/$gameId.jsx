@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, useLoaderData } from "remix";
 import Pusher from "pusher-js";
-import { Grid } from "~/components/game-grid";
-import { ScoreBoard } from "~/components/score-board";
+import { Grid, links as gameGridLinks } from "~/components/game-grid";
+import { ScoreBoard, links as scoreBoardLinks } from "~/components/score-board";
 import {
   claimSquare,
   countClaims,
@@ -16,11 +16,18 @@ import {
 } from "~/utils/game-logic.server";
 import { sendRefresh } from "~/utils/pusher.server";
 import { requireUserId } from "~/utils/session.server";
-import stylesUrl from "../../styles/game.css";
+import stylesUrl from "~/styles/games/game.css";
+import {
+  PayoutBoard,
+  links as payoutBoardLinks
+} from "~/components/payout-board";
 
-export const links = () => {
-  return [{ rel: "stylesheet", href: stylesUrl }];
-};
+export const links = () => [
+  ...gameGridLinks(),
+  ...scoreBoardLinks(),
+  ...payoutBoardLinks(),
+  { rel: "stylesheet", href: stylesUrl }
+];
 
 export const loader = async ({ request, params }) => {
   const participantId = await requireUserId(request);
@@ -79,7 +86,7 @@ export const action = async ({ params, request }) => {
     await sendRefresh(gameId, participantId);
     return "ok";
   }
-  console.log("Got a request", form);
+  // console.log("Got a request", form);
   return "ok";
 };
 
@@ -88,6 +95,10 @@ export default function GameRoute() {
     useLoaderData();
   let navigate = useNavigate();
   const remainingSquares = 100 - game.claims.length;
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD"
+  });
 
   if (game.state !== "FINAL") {
     useEffect(() => {
@@ -112,15 +123,25 @@ export default function GameRoute() {
 
   return (
     <div>
-      <h2>
-        Game {game.slug} {isHost && "(hosting)"}
-      </h2>
-      <p>
-        Participants: {participants.length}{" "}
-        {game.state === "INIT" &&
-          `Remaining Squares: 
+      <div className="title-wrapper">
+        <h5>{game.slug}</h5>{" "}
+        {game.state === "INIT" && (
+          <div className="instructions">
+            <div>Select the squares you'd like to claim.</div>
+            <div className="claim-cost">
+              {formatter.format(game.claimCost)} / square
+            </div>
+          </div>
+        )}
+      </div>
+      {false && (
+        <p>
+          Participants: {participants.length}{" "}
+          {game.state === "INIT" &&
+            `Remaining Squares: 
         ${remainingSquares}`}
-      </p>
+        </p>
+      )}
       {isHost && game.state === "INIT" && remainingSquares === 0 && (
         <div>
           <Form replace method="post">
@@ -130,11 +151,27 @@ export default function GameRoute() {
           </Form>
         </div>
       )}
-      {game.state !== "INIT" && <ScoreBoard game={game} isHost={isHost} />}
-      <p>
-        Claimed {numClaims}, total cost: {numClaims * game.claimCost}
-      </p>
       <Grid game={game} participantId={participantId} />
+      {game.state === "INIT" && (
+        <div className="claim-totals">
+          <div>
+            <span className="claim-number">{numClaims}</span> squares claimed
+          </div>
+          <div>
+            <span className="claim-number">
+              {formatter.format(numClaims * game.claimCost)}
+            </span>{" "}
+            total cost
+          </div>
+        </div>
+      )}
+      {game.state !== "INIT" && (
+        <>
+          <ScoreBoard game={game} isHost={isHost} />
+          <h5>Player Payouts</h5>
+          <PayoutBoard winners={game.winners} claimCost={game.claimCost} />
+        </>
+      )}
     </div>
   );
 }

@@ -1,0 +1,35 @@
+.winner-board {
+  border-collapse: collapse;
+  width: 100%;
+  height: 100%;
+}
+
+.winner-board th {
+  text-align: left;
+  color: hsla(0, 0%, 56%, 1);
+  font-size: 0.625rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.winner-board > tbody tr {
+  border-bottom: 1px solid black;
+}
+
+.winner-board > tbody td {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.quarter-cell {
+  font-size: 1.25rem;
+}
+
+.player-cell {
+  font-size: 1rem;
+}
+
+.id-cell,
+.payout-cell {
+  font-size: 0.875rem;
+}

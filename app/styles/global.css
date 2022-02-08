@@ -1,15 +1,138 @@
-html {
-  box-sizing: border-box;
+:root {
+  --light-grey: hsla(216, 8%, 93%, 1);
+  --medium-grey: hsla(0, 0%, 56%, 1);
+  --dark-grey: hsla(216, 23%, 36%, 1);
+  --purple: hsla(256, 100%, 60%, 1);
+  --teal: hsla(177, 94%, 54%, 1);
 }
 
 *,
 *::before,
 *::after {
-  box-sizing: inherit;
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
 }
 
 html,
 body {
-  padding: 0;
-  margin: 0;
+  height: 100%;
+  background-color: var(--light-grey);
+  font-family: "Roboto Slab", serif;
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+#root,
+#__next {
+  isolation: isolate;
+}
+
+h2 {
+  font-weight: 500;
+}
+
+h5 {
+  color: hsla(216, 23%, 36%, 1);
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 15px 0px;
+}
+
+input {
+  font-family: "Roboto", sans-serif;
+  background-color: hsla(0, 0%, 96%, 1);
+  border-radius: 45px;
+  box-shadow: inset 0px 1px 2px hsla(0, 0%, 0%, 0.25);
+}
+
+.max-width-wrapper {
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.form-wrapper {
+  margin: auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 15px;
+}
+
+.form-wrapper form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-wrapper label,
+label.vertical {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.form-action-wrapper {
+  display: flex;
+  justify-content: space-around;
+}
+
+.button {
+  color: white;
+  background-color: var(--purple);
+  font-size: 0.875rem;
+  font-style: normal;
+  padding: 10px 15px;
+  border-radius: 40px;
+  text-align: center;
+  border: 0;
+}
+
+a.button {
+  -webkit-appearance: button;
+  -moz-appearance: button;
+  appearance: button;
+
+  text-decoration: none;
+}
+
+.button.primary {
+  background-color: var(--purple);
+}
+
+.button.secondary {
+  background-color: var(--dark-grey);
 }

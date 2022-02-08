@@ -1,0 +1,98 @@
+.grid-wrapper {
+  display: grid;
+  grid-template-columns: 30px auto;
+  grid-template-rows: 30px auto;
+  grid-template-areas:
+    ". team1"
+    "team2 grid";
+  width: 100vw;
+  height: 100vw;
+  margin-left: -20px;
+  margin-right: -20px;
+}
+
+.table-wrapper {
+  grid-area: grid;
+  width: 100%;
+}
+
+.grid {
+  table-layout: fixed;
+  border-collapse: collapse;
+  width: 100%;
+  height: 100%;
+}
+
+.grid tr {
+  height: auto;
+  margin: 0;
+  padding: 0;
+}
+
+.teams {
+  text-align: center;
+  text-transform: uppercase;
+  color: white;
+  font-weight: bold;
+  padding: 4px;
+  border: 2px solid black;
+  font-size: 0.75rem;
+}
+
+.teams.team1 {
+  grid-area: team1;
+  background-color: var(--purple);
+  border-bottom: 0;
+}
+
+.teams.team2 {
+  grid-area: team2;
+  background-color: var(--dark-grey);
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  border-right: 0;
+}
+
+.square {
+  border: 2px solid black;
+  padding: 5px;
+  text-align: center;
+  padding: 0;
+  font-size: 0.625rem;
+}
+
+.square-button {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  background-color: inherit;
+  border: 0;
+}
+
+.claimed-self {
+  background-color: var(--teal);
+}
+
+.claimed-other {
+  background-color: hsla(0, 0%, 77%, 1);
+}
+
+.winner {
+  background-color: hsla(295, 100%, 50%, 1);
+}
+
+.header {
+  color: white;
+  padding: 3px;
+  border: 2px solid black;
+  font-size: 0.875rem;
+  font-weight: bold;
+}
+
+.header.team1 {
+  background-color: var(--purple);
+}
+
+.header.team2 {
+  background-color: var(--dark-grey);
+}

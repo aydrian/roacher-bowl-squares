@@ -1,24 +1,10 @@
-import {
-  Form,
-  Link,
-  json,
-  redirect,
-  useActionData,
-  useSearchParams
-} from "remix";
-import { createUserSession, getUserId, login } from "~/utils/session.server";
+import { Form, useActionData } from "remix";
+import { db } from "~/utils/db.server";
+import { createUserSession, register } from "~/utils/session.server";
 import stylesUrl from "~/styles/index.css";
 
 export const links = () => {
   return [{ rel: "stylesheet", href: stylesUrl }];
-};
-
-export const loader = async ({ request }) => {
-  const userId = await getUserId(request);
-  if (userId) {
-    return redirect("/games");
-  }
-  return { ok: true };
 };
 
 function validateUsername(username) {
@@ -33,57 +19,68 @@ function validatePassword(password) {
   }
 }
 
+function validateUserId(userid) {
+  if (typeof userid !== "string" || userid.length !== 3) {
+    return `User ID must be 3 characters long`;
+  }
+}
+
 const badRequest = (data) => json(data, { status: 400 });
 
 export const action = async ({ request }) => {
   const form = await request.formData();
   const username = form.get("username");
   const password = form.get("password");
-  const redirectTo = form.get("redirectTo") || "/games";
+  const userid = form.get("userid");
   if (
     typeof username !== "string" ||
     typeof password !== "string" ||
-    typeof redirectTo !== "string"
+    typeof userid !== "string"
   ) {
     return badRequest({
       formError: `Form not submitted correctly.`
     });
   }
 
-  const fields = { username, password };
+  const fields = { username, password, userid };
   const fieldErrors = {
     username: validateUsername(username),
-    password: validatePassword(password)
+    password: validatePassword(password),
+    userid: validateUserId(userid)
   };
   if (Object.values(fieldErrors).some(Boolean))
     return badRequest({ fieldErrors, fields });
 
-  const user = await login({ username, password });
+  const userExists = await db.user.findFirst({
+    where: { username }
+  });
+  if (userExists) {
+    return badRequest({
+      fields,
+      formError: `User with username ${username} already exists`
+    });
+  }
+  const user = await register({ username, password, userid });
   if (!user) {
     return badRequest({
       fields,
-      formError: `Username/Password combination is incorrect`
+      formError: `Something went wrong trying to create a new user.`
     });
   }
-  return createUserSession(user.id, redirectTo);
+  return createUserSession(user.id, "/games");
 };
 
 export default function Index() {
   const actionData = useActionData();
-  const [searchParams] = useSearchParams();
   return (
-    <div>
+    <>
       <header>
         <img src="/rbs-logo.svg" width={190} style={{ margin: "auto" }} />
       </header>
-      <main className="max-width-wrapper">
+      <main>
+        <h1>New user</h1>
         <div className="form-wrapper">
           <Form method="post">
-            <input
-              type="hidden"
-              name="redirectTo"
-              value={searchParams.get("redirectTo") ?? undefined}
-            />
             <div>
               <label>
                 Username{" "}
@@ -111,7 +108,7 @@ export default function Index() {
             </div>
             <div>
               <label>
-                Password{" "}
+                Password
                 <input
                   type="password"
                   name="password"
@@ -136,6 +133,32 @@ export default function Index() {
                 </p>
               ) : null}
             </div>
+            <div>
+              <label>
+                User ID (3 characters){" "}
+                <input
+                  type="text"
+                  name="userid"
+                  maxLength={3}
+                  defaultValue={actionData?.fields?.userid}
+                  aria-invalid={
+                    Boolean(actionData?.fieldErrors?.userid) || undefined
+                  }
+                  aria-describedby={
+                    actionData?.fieldErrors?.userid ? "userid-error" : undefined
+                  }
+                />
+              </label>
+              {actionData?.fieldErrors?.userid ? (
+                <p
+                  className="form-validation-error"
+                  role="alert"
+                  id="userid-error"
+                >
+                  {actionData?.fieldErrors.userid}
+                </p>
+              ) : null}
+            </div>
             <div id="form-error-message">
               {actionData?.formError ? (
                 <p className="form-validation-error" role="alert">
@@ -144,24 +167,17 @@ export default function Index() {
               ) : null}
             </div>
             <div className="form-action-wrapper">
-              <Link
-                to="/register"
-                className="button secondary"
-                style={{ width: "130px" }}
-              >
-                Register
-              </Link>
               <button
                 type="submit"
                 className="button primary"
                 style={{ width: "130px" }}
               >
-                Log in
+                Start
               </button>
             </div>
           </Form>
         </div>
       </main>
-    </div>
+    </>
   );
 }

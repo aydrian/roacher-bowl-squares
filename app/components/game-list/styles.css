@@ -1,0 +1,29 @@
+.game-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.game-item {
+  display: flex;
+  justify-content: space-between;
+  background-color: white;
+  box-shadow: 0px 0px 25px hsla(0, 0%, 0%, 0.12);
+  border-radius: 15px;
+  padding: 12px 15px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  text-decoration: none;
+}
+
+.game-name {
+  color: hsla(216, 23%, 36%, 1);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.game-details {
+  color: hsla(0, 0%, 35%, 1);
+  font-size: 0.75rem;
+}

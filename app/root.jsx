@@ -8,10 +8,20 @@ import {
   useLoaderData
 } from "remix";
 
-import globalStylesUrl from "./styles/global.css";
+import globalStylesUrl from "~/styles/global.css";
 
 export const links = () => {
   return [
+    { rel: "preconnnect", href: "https://fonts.googleapis.com" },
+    {
+      rel: "preconnnect",
+      href: "https://fonts.gstatic.com",
+      crossOrigin: "true"
+    },
+    {
+      rel: "stylesheet",
+      href: "https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700;800&family=Roboto:wght@500;700&display=swap"
+    },
     {
       rel: "stylesheet",
       href: globalStylesUrl

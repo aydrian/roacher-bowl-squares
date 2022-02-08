@@ -44,6 +44,7 @@ model User {
   updatedAt    DateTime? @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   username     String    @unique
   passwordHash String    @map("password_hash")
+  userid       String
   claims       Claim[]
   hostedGames  Game[]
 

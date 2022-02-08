@@ -2,10 +2,10 @@ import bcrypt from "bcrypt";
 import { createCookieSessionStorage, redirect } from "remix";
 import { db } from "./db.server";
 
-export async function register({ username, password }) {
+export async function register({ username, password, userid }) {
   const passwordHash = await bcrypt.hash(password, 10);
   return db.user.create({
-    data: { username, passwordHash }
+    data: { username, passwordHash, userid }
   });
 }
 
@@ -60,7 +60,7 @@ export async function requireUserId(
   const userId = session.get("userId");
   if (!userId || typeof userId !== "string") {
     const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
-    throw redirect(`/login?${searchParams}`);
+    throw redirect(`/?${searchParams}`);
   }
   return userId;
 }
@@ -83,7 +83,7 @@ export async function getUser(request) {
 
 export async function logout(request) {
   const session = await storage.getSession(request.headers.get("Cookie"));
-  return redirect("/login", {
+  return redirect("/", {
     headers: {
       "Set-Cookie": await storage.destroySession(session)
     }

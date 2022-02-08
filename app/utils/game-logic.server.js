@@ -150,7 +150,8 @@ function updateWinners(winners, quarter, winningClaim) {
   let [q1Winner, q2Winner, q3Winner, q4Winner] = winners;
   const winner = {
     id: winningClaim.participant.id,
-    name: winningClaim.participant.username
+    name: winningClaim.participant.username,
+    userid: winningClaim.participant.userid
   };
   switch (quarter) {
     case "Q1":
