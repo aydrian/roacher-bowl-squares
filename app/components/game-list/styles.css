@@ -13,4 +13,17 @@
   padding: 12px 15px;
   margin-top: 15px;
   margin-bottom: 15px;
+  text-decoration: none;
+}
+
+.game-name {
+  color: hsla(216, 23%, 36%, 1);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.game-details {
+  color: hsla(0, 0%, 35%, 1);
+  font-size: 0.75rem;
 }
