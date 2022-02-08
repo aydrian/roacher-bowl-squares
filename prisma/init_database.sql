@@ -27,8 +27,8 @@ CREATE TABLE claims (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   game_id UUID NOT NULL REFERENCES games (id) ON DELETE CASCADE,
   participant_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-  row INT4 NOT NULL,
-  col INT4 NOT NULL,
+  row INT NOT NULL, 
+  col INT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT now()
   UNIQUE(game_id, row, col)
 );
