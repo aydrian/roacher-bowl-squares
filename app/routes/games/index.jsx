@@ -63,7 +63,9 @@ export default function Index() {
     <div>
       <div className="header-wrapper">
         <h2>Hosted games</h2>
-        <Link to="new">New Game</Link>
+        <Link to="new" className="button primary">
+          New Game
+        </Link>
       </div>
       {hostedGames.length ? (
         <GameList games={hostedGames} />

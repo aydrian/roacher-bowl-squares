@@ -115,8 +115,7 @@ label.vertical {
   background-color: var(--purple);
   font-size: 0.875rem;
   font-style: normal;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding: 10px 15px;
   border-radius: 40px;
   text-align: center;
   border: 0;
