@@ -1,4 +1,4 @@
-import { Form, useActionData } from "remix";
+import { Form, json, useActionData } from "remix";
 import { db } from "~/utils/db.server";
 import { createUserSession, register } from "~/utils/session.server";
 import stylesUrl from "~/styles/index.css";
