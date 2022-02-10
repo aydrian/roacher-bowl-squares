@@ -72,6 +72,7 @@
   padding: 0;
   background-color: inherit;
   border: 0;
+  cursor: pointer;
 }
 
 .claimed-self {
