@@ -78,7 +78,6 @@ input {
 }
 
 .max-width-wrapper {
-  max-width: 600px;
   margin-left: auto;
   margin-right: auto;
   padding-left: 20px;
@@ -86,6 +85,7 @@ input {
 }
 
 .form-wrapper {
+  max-width: 600px;
   margin: auto;
   padding: 20px;
   background-color: white;
