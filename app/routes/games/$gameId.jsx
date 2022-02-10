@@ -142,15 +142,6 @@ export default function GameRoute() {
         ${remainingSquares}`}
         </p>
       )}
-      {isHost && game.state === "INIT" && remainingSquares === 0 && (
-        <div>
-          <Form replace method="post">
-            <button type="submit" name="gameAction" value="start">
-              Start
-            </button>
-          </Form>
-        </div>
-      )}
       <Grid game={game} participantId={participantId} />
       {game.state === "INIT" && (
         <div className="claim-totals">
@@ -163,6 +154,20 @@ export default function GameRoute() {
             </span>{" "}
             total cost
           </div>
+        </div>
+      )}
+      {isHost && game.state === "INIT" && remainingSquares === 0 && (
+        <div style={{ textAlign: "center", marginTop: "12px" }}>
+          <Form replace method="post" className="start-form-wrapper">
+            <button
+              type="submit"
+              className="button primary"
+              name="gameAction"
+              value="start"
+            >
+              Start
+            </button>
+          </Form>
         </div>
       )}
       {game.state !== "INIT" && (
