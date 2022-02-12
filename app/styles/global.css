@@ -119,6 +119,7 @@ label.vertical {
   border-radius: 40px;
   text-align: center;
   border: 0;
+  cursor: pointer;
 }
 
 a.button {
@@ -127,6 +128,7 @@ a.button {
   appearance: button;
 
   text-decoration: none;
+  cursor: pointer;
 }
 
 .button.primary {
@@ -135,4 +137,10 @@ a.button {
 
 .button.secondary {
   background-color: var(--dark-grey);
+}
+
+.error-container {
+  background-color: hsla(356, 77%, 59%, 0.747);
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
 }

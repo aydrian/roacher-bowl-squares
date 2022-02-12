@@ -66,3 +66,26 @@ export default function App() {
     </html>
   );
 }
+
+export function ErrorBoundary({ error }) {
+  console.error(error);
+  return (
+    <html lang="en">
+      <head>
+        <title>Oh no!</title>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <div className="error-container">
+          <h1>App Error</h1>
+          <pre>{error.message}</pre>
+          <p>Try refreshing the page.</p>
+        </div>
+        <Scripts />
+      </body>
+    </html>
+  );
+}

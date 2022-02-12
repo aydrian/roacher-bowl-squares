@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, useLoaderData } from "remix";
+import { Form, useLoaderData, useParams } from "remix";
 import Pusher from "pusher-js";
 import { Grid, links as gameGridLinks } from "~/components/game-grid";
 import { ScoreBoard, links as scoreBoardLinks } from "~/components/score-board";
@@ -178,5 +178,12 @@ export default function GameRoute() {
         </>
       )}
     </div>
+  );
+}
+
+export function ErrorBoundary() {
+  const { gameId } = useParams();
+  return (
+    <div className="error-container">{`There was an error loading game by the id ${gameId}. Sorry.`}</div>
   );
 }
